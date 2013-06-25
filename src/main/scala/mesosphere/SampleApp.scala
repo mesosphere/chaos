@@ -22,7 +22,5 @@ object SampleApp extends Application {
   def getModules() = {
     Seq(new HttpModule(args), new FooModule(args))
   }
-
-  Scallop(args).
   run()
 }

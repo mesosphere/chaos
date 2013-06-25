@@ -3,7 +3,7 @@ package mesosphere
 import org.rogach.scallop.{LazyScallopConf, ScallopConf}
 import com.google.inject.{Provides, AbstractModule}
 
-case class Conf2(arguments : Array[String]) extends LazyScallopConf(arguments) {
+case class Conf2(arguments : Array[String]) extends ScallopConf(arguments) {
   val port2 = opt[Int]("http_porttwo", descr = "The port to listen on for HTTP2 requests", default = Some(1212), noshort = true)
 }
 
