@@ -1,4 +1,6 @@
 .idea
 *.iml
 .reviewboardrc
+.classpath.txt
+dependency-reduced-pom.xml
 target
