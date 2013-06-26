@@ -26,6 +26,7 @@
         <metrics.version>3.0.0</metrics.version>
         <jetty.version>9.0.3.v20130506</jetty.version>
         <mycila.version>2.10.ga</mycila.version>
+        <jackson.version>2.2.2</jackson.version>
 
 
         <!-- test deps versions -->
@@ -122,14 +123,19 @@
             <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-guice</artifactId>
             <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_2.10</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Coda Hale's Metrics lib -->
