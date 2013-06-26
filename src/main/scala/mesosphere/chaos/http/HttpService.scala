@@ -1,4 +1,4 @@
-package mesosphere
+package mesosphere.chaos.http
 
 import com.google.common.util.concurrent.AbstractIdleService
 import com.google.inject.Inject
