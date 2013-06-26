@@ -1,10 +1,10 @@
 package mesosphere.chaos.http
 
-import com.google.inject.{Injector, Provides, AbstractModule}
-import org.eclipse.jetty.server.{Handler, Server}
+import com.google.inject.{Provides, AbstractModule}
+import org.eclipse.jetty.server.Server
 import org.rogach.scallop._
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
-import com.google.inject.servlet.{GuiceServletContextListener, GuiceFilter}
+import com.google.inject.servlet.GuiceFilter
 import java.util
 import javax.servlet.DispatcherType
 
@@ -21,14 +21,14 @@ class HttpModule(conf : HttpConf) extends AbstractModule {
   }
 
   @Provides
-  def provideHttpServer(handler: Handler) = {
+  def provideHttpServer(handler: ServletContextHandler) = {
     val server = new Server(conf.port())
     server.setHandler(handler)
     server
   }
 
   @Provides
-  def provideHandler() : Handler = {
+  def provideHandler(): ServletContextHandler = {
     val handler = new ServletContextHandler()
     // Filters don't run if no servlets are bound, so we bind the DefaultServlet
     handler.addServlet(classOf[DefaultServlet], "/*")
