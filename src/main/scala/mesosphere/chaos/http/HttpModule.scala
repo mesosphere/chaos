@@ -16,7 +16,6 @@ trait HttpConf extends ScallopConf {
   lazy val port = opt[Int]("http_port", descr = "The port to listen on for HTTP requests", default = Some(8080), noshort = true)
 }
 
-
 class HttpModule(conf: HttpConf) extends AbstractModule {
   def configure() {
     bind(classOf[HttpService])
