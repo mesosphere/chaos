@@ -12,15 +12,13 @@ class SampleApp(port : Int) extends AbstractIdleService {
   def startUp() { println("Starting up.") }
 
   def shutDown() { println("Shutting down.") }
-
 }
-
-
 
 object SampleApp extends Application {
 
   def getModules() = {
     Seq(new HttpModule(args), new FooModule(args))
   }
+
   run()
 }
