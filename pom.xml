@@ -94,13 +94,6 @@
             <version>${guice.version}</version>
         </dependency>
 
-        <!-- JSR250 support -->
-        <dependency>
-            <groupId>com.mycila</groupId>
-            <artifactId>mycila-guice</artifactId>
-            <version>${mycila.version}</version>
-        </dependency>
-
         <!-- The REST stack -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -142,11 +135,6 @@
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-jersey</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
             <version>${metrics.version}</version>
         </dependency>
         <dependency>
