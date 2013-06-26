@@ -6,9 +6,10 @@ import org.eclipse.jetty.server.Server
 import java.util.logging.Logger
 
 /**
+ * Wrapper for starting and stopping the HttpServer.
  * @author Florian Leibert (flo@leibert.de)
+ * @author Tobi Knaup (tobi@knaup.me)
  */
-
 class HttpService @Inject()(val server : Server, val log : Logger) extends AbstractIdleService {
 
   def startUp() {
