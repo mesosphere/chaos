@@ -13,7 +13,7 @@ import javax.validation.Valid
 
 class SampleObject {
   @JsonProperty @Range(min = 0, max = 150, message = "ERROR") var age : Int = 0
-  @JsonProperty  @NotEmpty(message = "ERROR") var name : String = ""
+  @JsonProperty @NotEmpty(message = "ERROR") var name : String = ""
 }
 
 @Path("foo")
