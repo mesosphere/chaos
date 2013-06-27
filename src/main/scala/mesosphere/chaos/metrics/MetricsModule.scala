@@ -3,6 +3,8 @@ package mesosphere.chaos.metrics
 import com.google.inject.{Singleton, Provides, AbstractModule}
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchAdapter
+import com.codahale.metrics.jetty9.InstrumentedHandler
+import org.eclipse.jetty.servlet.ServletContextHandler
 
 /**
  * @author Tobi Knaup
@@ -18,5 +20,13 @@ class MetricsModule extends AbstractModule {
   @Provides
   def provideInstrumentedResourceMethodDispatchAdapter(registry: MetricRegistry) =
     new InstrumentedResourceMethodDispatchAdapter(registry)
+
+  @Singleton
+  @Provides
+  def provideInstrumentedHandler(servletHandler: ServletContextHandler, registry: MetricRegistry) = {
+    val handler = new InstrumentedHandler(registry)
+    handler.setHandler(servletHandler)
+    handler
+  }
 
 }
