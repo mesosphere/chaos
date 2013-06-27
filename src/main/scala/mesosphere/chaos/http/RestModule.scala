@@ -21,10 +21,12 @@ class RestModule extends ServletModule {
   protected override def configureServlets() {
     bind(classOf[PingServlet]).in(Scopes.SINGLETON)
     bind(classOf[MetricsServlet]).in(Scopes.SINGLETON)
+    bind(classOf[LogConfigServlet]).in(Scopes.SINGLETON)
     bind(classOf[ConstraintViolationExceptionMapper]).in(Scopes.SINGLETON)
 
     serve("/ping").`with`(classOf[PingServlet])
     serve("/metrics").`with`(classOf[MetricsServlet])
+    serve("/logging").`with`(classOf[LogConfigServlet])
     serve("/*").`with`(classOf[GuiceContainer])
   }
 

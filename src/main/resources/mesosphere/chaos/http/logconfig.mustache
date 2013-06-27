@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Logger Config</title>
+    <style>
+    body {
+      font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
+    }
+    </style>
+  </head>
+
+  <body>
+    <h1>Logger Config</h1>
+    <form action="" method="post">
+      <select name="logger">
+      {{#loggers}}
+        <option>{{name}}</option>
+      {{/loggers}}
+      </select>
+      <select name="level">
+        {{#levels}}
+          <option>{{.}}</option>
+        {{/levels}}
+      </select>
+      <button type="submit">Save</button>
+    </form>
+
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Logger</th>
+          <th>Level</th>
+        </tr>
+      </thead>
+      <tbody>
+      {{#loggers}}
+        <tr>
+          <td>{{name}}</td>
+          <td>{{level}}</td>
+        </tr>
+      {{/loggers}}
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -28,6 +28,7 @@
         <mycila.version>2.10.ga</mycila.version>
         <jackson.version>2.2.2</jackson.version>
         <hibernate.version>5.0.1.Final</hibernate.version>
+        <mustache.version>0.8.12</mustache.version>
 
         <!-- test deps versions -->
         <junit.version>4.11</junit.version>
@@ -43,13 +44,6 @@
         <scala-maven-plugin.version>3.1.0</scala-maven-plugin.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>twitter-repo</id>
-            <name>Twitter Maven2 Repository</name>
-            <url>http://maven.twttr.com/</url>
-        </repository>
-    </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>repo1</id>
@@ -57,14 +51,6 @@
             <url>http://repo1.maven.org/maven2</url>
             <snapshots>
                 <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>artifactory</id>
-            <name>Twitter Artifactory</name>
-            <url>http://artifactory.local.twitter.com/repo</url>
-            <snapshots>
-                <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
@@ -169,6 +155,11 @@
             <artifactId>scallop_2.10</artifactId>
             <version>${scallop.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.spullara.mustache.java</groupId>
+            <artifactId>compiler</artifactId>
+            <version>${mustache.version}</version>
+        </dependency>
 
         <!-- Test scope -->
         <dependency>
@@ -194,11 +185,7 @@
     <build>
         <resources>
             <resource>
-                <targetPath>assets</targetPath>
-                <directory>src/main/resources/assets</directory>
-                <includes>
-                    <include>build/</include>
-                </includes>
+                <directory>src/main/resources</directory>
             </resource>
         </resources>
         <pluginManagement>
