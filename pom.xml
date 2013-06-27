@@ -154,6 +154,11 @@
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
+            <artifactId>metrics-jetty9</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-servlets</artifactId>
             <version>${metrics.version}</version>
         </dependency>

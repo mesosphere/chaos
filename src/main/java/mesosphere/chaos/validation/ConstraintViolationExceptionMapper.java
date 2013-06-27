@@ -1,4 +1,4 @@
-package mesosphere.validation;
+package mesosphere.chaos.validation;
 
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.Response;

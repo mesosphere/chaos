@@ -8,6 +8,7 @@ import com.google.inject.servlet.GuiceFilter
 import java.util
 import javax.servlet.DispatcherType
 import scala.Some
+import com.codahale.metrics.jetty9.InstrumentedHandler
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -23,7 +24,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   }
 
   @Provides
-  def provideHttpServer(handler: ServletContextHandler) = {
+  def provideHttpServer(handler: InstrumentedHandler) = {
     val server = new Server(conf.port())
     server.setHandler(handler)
     server

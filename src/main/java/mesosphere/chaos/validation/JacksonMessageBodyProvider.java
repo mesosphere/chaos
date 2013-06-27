@@ -1,4 +1,4 @@
-package mesosphere.validation;
+package mesosphere.chaos.validation;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.databind.ObjectMapper;
