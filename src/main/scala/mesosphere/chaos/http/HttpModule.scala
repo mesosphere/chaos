@@ -1,14 +1,15 @@
 package mesosphere.chaos.http
 
 import com.google.inject._
-import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.server.{RequestLog, Server}
 import org.rogach.scallop._
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
 import com.google.inject.servlet.GuiceFilter
 import java.util
 import javax.servlet.DispatcherType
-import scala.Some
+import scala.{Array, Some}
 import com.codahale.metrics.jetty9.InstrumentedHandler
+import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -21,13 +22,29 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   def configure() {
     bind(classOf[HttpService])
     bind(classOf[GuiceServletConfig]).asEagerSingleton()
+    bind(classOf[RequestLog]).to(classOf[ChaosRequestLog])
   }
 
   @Provides
-  def provideHttpServer(handler: InstrumentedHandler) = {
+  def provideHttpServer(handlers: HandlerCollection) = {
     val server = new Server(conf.port())
-    server.setHandler(handler)
+    server.setHandler(handlers)
     server
+  }
+
+  @Provides
+  def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
+                               logHandler: RequestLogHandler): HandlerCollection = {
+    val handlers = new HandlerCollection()
+    handlers.setHandlers(Array(instrumentedHandler, logHandler))
+    handlers
+  }
+
+  @Provides
+  def provideRequestLogHandler(requestLog: RequestLog) = {
+    val handler = new RequestLogHandler()
+    handler.setRequestLog(requestLog)
+    handler
   }
 
   @Singleton

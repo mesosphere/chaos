@@ -5,12 +5,24 @@
     <style>
     body {
       font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
+      font-weight: 400;
+    }
+    table {
+      border-spacing: 2px;
+    }
+    .alert-info {
+      color: #3a87ad;
     }
     </style>
   </head>
 
   <body>
     <h1>Logger Config</h1>
+
+    {{#configChange}}
+      <h4 class="alert-info">{{configChange}}</h4>
+    {{/configChange}}
+
     <form action="" method="post">
       <select name="logger">
       {{#loggers}}
@@ -25,7 +37,7 @@
       <button type="submit">Save</button>
     </form>
 
-    <table cellpadding="0" cellspacing="0">
+    <table>
       <thead>
         <tr>
           <th>Logger</th>
