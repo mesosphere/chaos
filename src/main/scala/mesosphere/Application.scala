@@ -1,8 +1,8 @@
 package mesosphere
 
 import com.google.inject.{Module, Guice}
-import com.google.common.util.concurrent.AbstractIdleService
 import org.rogach.scallop.ScallopConf
+import com.google.common.util.concurrent.Service
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -14,7 +14,7 @@ trait Application extends App {
 
   def getModules(): Iterable[_ <: Module]
 
-  def run[T <: AbstractIdleService](clazz : List[Class[T]]) {
+  def run(clazz: List[Class[_ <:Service]]) {
     getConfiguration().afterInit()
 
     import scala.collection.JavaConverters._
@@ -22,7 +22,6 @@ trait Application extends App {
 
     //TODO(FL|TK): Think about pulling this out and maybe using JSR250.
     clazz.foreach(x => injector.getInstance(x).start())
-
   }
 
 
