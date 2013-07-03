@@ -9,6 +9,8 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import javax.validation.Validation
 import com.google.inject.servlet.ServletModule
 import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolationExceptionMapper}
+import javax.inject.Named
+import com.google.inject.name.Names
 
 /**
  * Base class for REST modules.
@@ -19,6 +21,10 @@ import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolat
 class RestModule extends ServletModule {
 
   protected override def configureServlets() {
+    bind(classOf[ObjectMapper])
+      .annotatedWith(Names.named("restMapper"))
+      .toInstance(new ObjectMapper())
+
     bind(classOf[PingServlet]).in(Scopes.SINGLETON)
     bind(classOf[MetricsServlet]).in(Scopes.SINGLETON)
     bind(classOf[LogConfigServlet]).in(Scopes.SINGLETON)
@@ -32,8 +38,7 @@ class RestModule extends ServletModule {
 
   @Provides
   @Singleton
-  def provideJacksonJsonProvider: JacksonJsonProvider = {
-    val mapper = new ObjectMapper()
+  def provideJacksonJsonProvider(@Named("restMapper") mapper: ObjectMapper): JacksonJsonProvider = {
     mapper.registerModule(DefaultScalaModule)
     new JacksonMessageBodyProvider(mapper, Validation.buildDefaultValidatorFactory().getValidator)
   }

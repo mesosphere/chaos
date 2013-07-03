@@ -4,7 +4,7 @@
 
     <groupId>mesosphere</groupId>
     <artifactId>chaos</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <inceptionYear>2013</inceptionYear>
 
     <prerequisites>
