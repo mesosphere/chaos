@@ -44,6 +44,31 @@
         <scala-maven-plugin.version>3.1.0</scala-maven-plugin.version>
     </properties>
 
+    <developers>
+        <!-- see git log -->
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/mesosphere/${artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:mesosphere/${artifactId}.git</developerConnection>
+        <url>http://github.com/mesosphere/${artifactId}/tree/master</url>
+        <tag>HEAD</tag>
+    </scm>
+
+
+    <distributionManagement>
+        <repository>
+            <id>aws-release</id>
+            <name>Mesosphere Private Release Repository</name>
+            <url>s3://maven-private/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>aws-snapshot</id>
+            <name>Mesosphere Private Snapshot Repository</name>
+            <url>s3://maven-private/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <pluginRepositories>
         <pluginRepository>
             <id>repo1</id>
@@ -54,6 +79,8 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+
 
     <dependencies>
         <!-- Scala -->
@@ -86,11 +113,11 @@
             <artifactId>jetty-server</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
-        <version>${jetty.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
@@ -183,6 +210,15 @@
     </dependencies>
 
     <build>
+        <!-- For S3 deploys, requires modifying the ~/.m2/settings, see
+        https://github.com/SpringSource/aws-maven for more info -->
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>4.8.0.RELEASE</version>
+            </extension>
+        </extensions>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
