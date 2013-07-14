@@ -4,6 +4,7 @@ import org.rogach.scallop.ScallopConf
 import mesosphere.chaos.http.{HttpService, HttpConf, HttpModule}
 import mesosphere.Application
 import mesosphere.chaos.metrics.MetricsModule
+import mesosphere.chaos.AppConfiguration
 
 object Main extends Application {
 
@@ -15,7 +16,8 @@ object Main extends Application {
     )
   }
 
-  lazy val getConfiguration = new ScallopConf(args) with HttpConf
+  lazy val getConfiguration = new ScallopConf(args)
+    with HttpConf with AppConfiguration
 
   run(List(classOf[HttpService]))
 
