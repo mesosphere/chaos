@@ -23,8 +23,7 @@
         <scallop.version>0.9.2</scallop.version>
         <jersey.version>1.17.1</jersey.version>
         <metrics.version>3.0.0</metrics.version>
-        <jetty.version>9.0.3.v20130506</jetty.version>
-        <mycila.version>2.10.ga</mycila.version>
+        <jetty.version>8.1.11.v20130520</jetty.version>
         <jackson.version>2.2.2</jackson.version>
         <hibernate.version>5.0.1.Final</hibernate.version>
         <mustache.version>0.8.12</mustache.version>
@@ -48,9 +47,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/mesosphere/${artifactId}.git</connection>
-        <developerConnection>scm:git:git@github.com:mesosphere/${artifactId}.git</developerConnection>
-        <url>http://github.com/mesosphere/${artifactId}/tree/master</url>
+        <connection>scm:git:git://github.com/mesosphere/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:mesosphere/${project.artifactId}.git</developerConnection>
+        <url>http://github.com/mesosphere/${project.artifactId}/tree/master</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -166,7 +165,7 @@
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-jetty9</artifactId>
+            <artifactId>metrics-jetty8</artifactId>
             <version>${metrics.version}</version>
         </dependency>
         <dependency>
@@ -185,6 +184,11 @@
             <groupId>com.github.spullara.mustache.java</groupId>
             <artifactId>compiler</artifactId>
             <version>${mustache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.5</version>
         </dependency>
 
         <!-- Test scope -->
