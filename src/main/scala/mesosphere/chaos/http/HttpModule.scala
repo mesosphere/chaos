@@ -9,7 +9,8 @@ import java.util
 import javax.servlet.DispatcherType
 import scala.{Array, Some}
 import com.codahale.metrics.jetty8.InstrumentedHandler
-import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
+import org.eclipse.jetty.server.handler.{ResourceHandler, RequestLogHandler, HandlerCollection}
+import javax.inject.Named
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -19,6 +20,11 @@ trait HttpConf extends ScallopConf {
 }
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
+
+  // TODO make configurable
+  val welcomeFiles = Array("index.html")
+  val resourceBase = getClass.getClassLoader.getResource("assets").toExternalForm
+
   def configure() {
     bind(classOf[HttpService])
     bind(classOf[GuiceServletConfig]).asEagerSingleton()
@@ -26,6 +32,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   }
 
   @Provides
+  @Singleton
   def provideHttpServer(handlers: HandlerCollection) = {
     val server = new Server(conf.port())
     server.setHandler(handlers)
@@ -33,22 +40,35 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   }
 
   @Provides
+  @Singleton
   def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
-                               logHandler: RequestLogHandler): HandlerCollection = {
+                               logHandler: RequestLogHandler,
+                               resourceHandler: ResourceHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
-    handlers.setHandlers(Array(instrumentedHandler, logHandler))
+    handlers.setHandlers(Array(resourceHandler, instrumentedHandler, logHandler))
     handlers
   }
 
   @Provides
+  @Singleton
   def provideRequestLogHandler(requestLog: RequestLog) = {
     val handler = new RequestLogHandler()
     handler.setRequestLog(requestLog)
     handler
   }
 
-  @Singleton
   @Provides
+  @Singleton
+  def provideResourceHandler() = {
+    val handler = new ResourceHandler
+    handler.setDirectoriesListed(false)
+    handler.setWelcomeFiles(welcomeFiles)
+    handler.setResourceBase(resourceBase)
+    handler
+  }
+
+  @Provides
+  @Singleton
   def provideHandler(guiceServletConf: GuiceServletConfig): ServletContextHandler = {
     val handler = new ServletContextHandler()
     // Filters don't run if no servlets are bound, so we bind the DefaultServlet
