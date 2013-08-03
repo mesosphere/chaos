@@ -2,23 +2,21 @@ package mesosphere.chaos.example
 
 import org.rogach.scallop.ScallopConf
 import mesosphere.chaos.http.{HttpService, HttpConf, HttpModule}
-import mesosphere.Application
 import mesosphere.chaos.metrics.MetricsModule
-import mesosphere.chaos.AppConfiguration
+import mesosphere.chaos.{App, AppConfiguration}
 
-object Main extends Application {
+object Main extends App {
 
-  def getModules() = {
+  def modules() = {
     Seq(
-      new HttpModule(getConfiguration),
+      new HttpModule(conf),
       new MetricsModule,
       new ExampleRestModule
     )
   }
 
-  lazy val getConfiguration = new ScallopConf(args)
+  lazy val conf = new ScallopConf(args)
     with HttpConf with AppConfiguration
 
   run(List(classOf[HttpService]))
-
 }
