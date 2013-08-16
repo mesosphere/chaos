@@ -1,7 +1,7 @@
 package mesosphere.chaos.http
 
 import com.google.inject._
-import org.eclipse.jetty.server.{RequestLog, Server}
+import org.eclipse.jetty.server._
 import org.rogach.scallop._
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
 import com.google.inject.servlet.GuiceFilter
@@ -10,13 +10,29 @@ import javax.servlet.DispatcherType
 import scala.{Array, Some}
 import com.codahale.metrics.jetty8.InstrumentedHandler
 import org.eclipse.jetty.server.handler.{ResourceHandler, RequestLogHandler, HandlerCollection}
+import com.codahale.metrics.jetty9.InstrumentedHandler
+import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
+import org.eclipse.jetty.util.ssl.SslContextFactory
+import java.io.File
 import javax.inject.Named
+import scala.Some
+import java.util.logging.Logger
 
 /**
  * @author Florian Leibert (flo@leibert.de)
  */
 trait HttpConf extends ScallopConf {
-  lazy val port = opt[Int]("http_port", descr = "The port to listen on for HTTP requests", default = Some(8080), noshort = true)
+  lazy val port = opt[Int]("http_port",
+    descr = "The port to listen on for HTTP requests", default = Some(8080),
+    noshort = true)
+  lazy val httpsPort = opt[Int]("https_port",
+    descr = "The port to listen on for HTTPS requests", default = Some(8443),
+    noshort = true)
+  lazy val sslKeystorePath = opt[String]("ssl_keystore_path",
+    descr = "Provides the keystore, if supplied, SSL is enabled",
+    default = None, noshort = true)
+  lazy val sslKeystorePassword =  opt[String]("ssl_keystore_password",
+    descr = "The password for the keystore", default = None, noshort = true)
 }
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
@@ -24,6 +40,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   // TODO make configurable
   val welcomeFiles = Array("index.html")
   val resourceBase = getClass.getClassLoader.getResource("assets").toExternalForm
+  private[this] val log = Logger.getLogger(getClass.getName)
 
   def configure() {
     bind(classOf[HttpService])
@@ -31,11 +48,46 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     bind(classOf[RequestLog]).to(classOf[ChaosRequestLog])
   }
 
+  def getSSLConnector(server: Server): Option[ServerConnector] = {
+    if (conf.sslKeystorePath.isSupplied) {
+      val keystore = new File(conf.sslKeystorePath())
+      require(keystore.exists() && keystore.canRead,
+        f"${conf.sslKeystorePath()} is invalid or not readable!")
+      val contextFactory = new SslContextFactory()
+      contextFactory.setKeyStorePath(conf.sslKeystorePath())
+      contextFactory.setKeyStorePassword(conf.sslKeystorePassword())
+
+      val httpsConfig = new HttpConfiguration()
+      //TODO(*): Make configurable.
+      httpsConfig.setSecureScheme("https")
+      httpsConfig.setSecurePort(conf.httpsPort())
+      httpsConfig.setOutputBufferSize(32768)
+      httpsConfig.setRequestHeaderSize(8192)
+      httpsConfig.setResponseHeaderSize(8192)
+      httpsConfig.setSendServerVersion(true)
+      httpsConfig.setSendDateHeader(false)
+      httpsConfig.addCustomizer(new SecureRequestCustomizer())
+      val sslConnector = new ServerConnector(server,
+        new SslConnectionFactory(contextFactory, "http/1.1"),
+        new HttpConnectionFactory(httpsConfig))
+      sslConnector.setPort(conf.httpsPort())
+      return Some(sslConnector)
+    }
+    None
+  }
+
   @Provides
   @Singleton
   def provideHttpServer(handlers: HandlerCollection) = {
     val server = new Server(conf.port())
     server.setHandler(handlers)
+    val sslConnector = getSSLConnector(server)
+    if (sslConnector.nonEmpty) {
+      log.info("Adding SSL support.")
+      server.addConnector(sslConnector.get)
+    } else {
+      log.warning("No SSL support configured.")
+    }
     server
   }
 
