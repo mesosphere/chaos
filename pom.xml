@@ -3,11 +3,7 @@
 
     <groupId>mesosphere</groupId>
     <artifactId>chaos</artifactId>
-<<<<<<< HEAD
-    <version>0.3.7-SNAPSHOT</version>
-=======
     <version>0.4.0-SNAPSHOT</version>
->>>>>>> 3a3d013... Adding SSL support
     <inceptionYear>2013</inceptionYear>
 
     <prerequisites>
