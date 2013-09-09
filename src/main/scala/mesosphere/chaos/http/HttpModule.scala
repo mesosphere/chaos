@@ -1,26 +1,24 @@
 package mesosphere.chaos.http
 
-import com.google.inject._
-import org.eclipse.jetty.server._
-import org.rogach.scallop._
-import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
-import com.google.inject.servlet.GuiceFilter
-import java.util
-import javax.servlet.DispatcherType
-import scala.{Array, Some}
 import com.codahale.metrics.jetty8.InstrumentedHandler
-import org.eclipse.jetty.server.handler.{ResourceHandler, RequestLogHandler, HandlerCollection}
-import com.codahale.metrics.jetty9.InstrumentedHandler
-import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
-import org.eclipse.jetty.util.ssl.SslContextFactory
+import com.google.inject._
+import com.google.inject.servlet.GuiceFilter
 import java.io.File
-import javax.inject.Named
-import scala.Some
+import java.util
 import java.util.logging.Logger
-import org.eclipse.jetty.util.security.{Password, Credential, Constraint}
+import javax.servlet.DispatcherType
 import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
+import org.eclipse.jetty.server._
+import org.eclipse.jetty.server.handler.ResourceHandler
+import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
+import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
+import org.eclipse.jetty.util.ssl.SslContextFactory
+import org.eclipse.jetty.util.security.{Password, Constraint}
+import org.rogach.scallop._
+import scala.Array
 import scala.Some
+import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -38,10 +36,10 @@ trait HttpConf extends ScallopConf {
     descr = "Provides the keystore, if supplied, SSL is enabled",
     default = None, noshort = true)
 
-  lazy val sslKeystorePassword =  opt[String]("ssl_keystore_password",
+  lazy val sslKeystorePassword = opt[String]("ssl_keystore_password",
     descr = "The password for the keystore", default = None, noshort = true)
 
-  lazy val httpCredentials =  opt[String]("http_credentials",
+  lazy val httpCredentials = opt[String]("http_credentials",
     descr = "Credentials for accessing the http service." +
       "If empty, anyone can access the HTTP endpoint. A username:password" +
       "is expected where the username must not contain ':'",
@@ -62,7 +60,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     bind(classOf[RequestLog]).to(classOf[ChaosRequestLog])
   }
 
-  def getSSLConnector(server: Server): Option[ServerConnector] = {
+  def getSSLConnector(server: Server): Option[Connector] = {
     if (conf.sslKeystorePath.isSupplied) {
       val keystore = new File(conf.sslKeystorePath())
       require(keystore.exists() && keystore.canRead,
@@ -70,20 +68,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       val contextFactory = new SslContextFactory()
       contextFactory.setKeyStorePath(conf.sslKeystorePath())
       contextFactory.setKeyStorePassword(conf.sslKeystorePassword())
-
-      val httpsConfig = new HttpConfiguration()
-      //TODO(*): Make configurable.
-      httpsConfig.setSecureScheme("https")
-      httpsConfig.setSecurePort(conf.httpsPort())
-      httpsConfig.setOutputBufferSize(32768)
-      httpsConfig.setRequestHeaderSize(8192)
-      httpsConfig.setResponseHeaderSize(8192)
-      httpsConfig.setSendServerVersion(true)
-      httpsConfig.setSendDateHeader(false)
-      httpsConfig.addCustomizer(new SecureRequestCustomizer())
-      val sslConnector = new ServerConnector(server,
-        new SslConnectionFactory(contextFactory, "http/1.1"),
-        new HttpConnectionFactory(httpsConfig))
+      val sslConnector = new SslSelectChannelConnector(contextFactory)
       sslConnector.setPort(conf.httpsPort())
       return Some(sslConnector)
     }
@@ -148,7 +133,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   }
 
   def getSecurityHandler(): ConstraintSecurityHandler = {
-    val constraint = new Constraint(Constraint.__BASIC_AUTH,"user");
+    val constraint = new Constraint(Constraint.__BASIC_AUTH, "user")
     constraint.setAuthenticate(true)
 
     //TODO(FL): Make configurable
