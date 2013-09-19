@@ -57,7 +57,7 @@
         <repository>
             <id>aws-release</id>
             <name>Mesosphere Public Repository</name>
-            <url>s3://mesosphere-maven-public/</url>
+            <url>s3://downloads.mesosphere.io/maven/</url>
         </repository>
         <snapshotRepository>
             <id>aws-snapshot</id>
