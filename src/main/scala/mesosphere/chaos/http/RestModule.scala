@@ -1,6 +1,6 @@
 package mesosphere.chaos.http
 
-import com.codahale.metrics.servlets.{MetricsServlet, PingServlet}
+import com.codahale.metrics.servlets.MetricsServlet
 import com.google.inject.{Singleton, Provides, Scopes}
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
