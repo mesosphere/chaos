@@ -20,11 +20,11 @@
         <!-- runtime deps versions -->
         <guava.version>14.0.1</guava.version>
         <guice.version>3.0</guice.version>
-        <scallop.version>0.9.2</scallop.version>
+        <scallop.version>0.9.4</scallop.version>
         <jersey.version>1.17.1</jersey.version>
         <metrics.version>3.0.0</metrics.version>
         <jetty.version>8.1.11.v20130520</jetty.version>
-        <jackson.version>2.2.2</jackson.version>
+        <jackson.version>2.2.3</jackson.version>
         <hibernate.version>5.0.1.Final</hibernate.version>
         <mustache.version>0.8.12</mustache.version>
 
