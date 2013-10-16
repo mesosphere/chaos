@@ -3,8 +3,9 @@ package mesosphere.chaos
 import com.google.inject.{Module, Guice}
 import org.rogach.scallop.ScallopConf
 import com.google.common.util.concurrent.Service
-import java.util.logging.LogManager
+import java.util.logging.{Logger, LogManager}
 import java.io.FileInputStream
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -14,6 +15,8 @@ trait App extends scala.App {
   import scala.collection.JavaConverters._
 
   lazy val injector = Guice.createInjector(modules().asJava)
+  val services = ListBuffer.empty[Service]
+  private val log = Logger.getLogger(getClass.getName)
 
   def conf(): ScallopConf with AppConfiguration
 
@@ -30,10 +33,25 @@ trait App extends scala.App {
     }
   }
 
-  def run(clazz: Iterable[Class[_ <: Service]]) {
+  def run(classes: Iterable[Class[_ <: Service]]) {
     initConf()
 
-    //TODO(FL|TK): Think about pulling this out and maybe using JSR250.
-    clazz.foreach(x => injector.getInstance(x).start())
+    sys.addShutdownHook(shutdownAndWait())
+
+    classes.foreach(c => {
+      val service = injector.getInstance(c)
+      services += service
+      service.start()
+    })
+  }
+
+  def shutdown() {
+    log.info("Shutting down services")
+    services.foreach(_.stop())
+  }
+
+  def shutdownAndWait() {
+    log.info("Waiting for services to shut down")
+    services.foreach(_.stopAndWait())
   }
 }
