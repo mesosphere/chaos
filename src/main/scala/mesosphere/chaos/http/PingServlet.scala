@@ -5,7 +5,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpServlet}
 /**
  * An HTTP servlets which outputs a {@code text/plain} {@code "pong"} response.
  *
- * PingServlet from com.codahale.metrics, with CORBS header added.
+ * PingServlet from com.codahale.metrics, with CORS header added.
  */
 
 class PingServlet extends HttpServlet {

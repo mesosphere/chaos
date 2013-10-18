@@ -39,6 +39,9 @@
         <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
         <maven-surefire-plugins.version>2.14.1</maven-surefire-plugins.version>
         <scala-maven-plugin.version>3.1.0</scala-maven-plugin.version>
+        <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
+
+        <exec.mainClass>mesosphere.chaos.example.Main</exec.mainClass>
     </properties>
 
     <developers>
@@ -354,6 +357,11 @@
                         </fileset>
                     </filesets>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

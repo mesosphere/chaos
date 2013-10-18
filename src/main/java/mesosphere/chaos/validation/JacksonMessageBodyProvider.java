@@ -1,3 +1,4 @@
+// Originally from com.codahale.dropwizard.jersey.jackson
 package mesosphere.chaos.validation;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -17,6 +18,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+/**
+ * A Jersey provider which enables using Jackson to parse request entities into objects and generate
+ * response entities from objects. Any request entity method parameters annotated with
+ * {@code @Valid} are validated, and an informative 422 Unprocessable Entity response is returned
+ * should the entity be invalid.
+ * <p/>
+ * (Essentially, extends {@link JacksonJaxbJsonProvider} with validation and support for
+ * {@link JsonIgnoreType}.)
+ */
 public class JacksonMessageBodyProvider extends JacksonJaxbJsonProvider {
     /**
      * The default group array used in case any of the validate methods is called without a group.

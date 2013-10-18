@@ -1,25 +1,110 @@
 # Chaos
 
-Framework for writing lightweight scala services.
+A lightweight framework for writing REST services in Scala.
 
-![](http://magiccards.info/scans/en/cedi/237.jpg)
+[Chaos](https://en.wikipedia.org/wiki/Chaos_%28cosmogony%29) (Greek χάος, khaos) refers to the formless or void state preceding the creation of the universe or cosmos in the Greek creation myths. Chaos (the framework) precedes creation of a universe of services.
 
-### Installation
+## Another framework? COME ON!
 
-To package and install Chaos into your local Maven repo:
+<img src="http://25.media.tumblr.com/84c8ce7dd9d89bfcca79788f763cb97e/tumblr_mngx21FyhC1qa8jwfo1_500.gif" width="250" alt="COME ON!">
 
-    mvn package install:install
+Why yet another framework? At [Mesosphere](http://mesosphere.io) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
+We also experimented with [Play!](https://github.com/playframework/playframework), but it does many things besides REST, which adds unnecessary baggage.
 
-### Examples
+### Design Goals
 
-Example app in src/main/scala/mesosphere/chaos/example. To run the example:
+We wanted a framework that
 
-    mvn package install:install
-    java -cp target/chaos-<VERSION>.jar mesosphere.chaos.example.Main
+* is easy to use
+* does one thing really well (REST)
+* feels good in Scala
+* is built on battle-tested and well-supported libraries
+* doesn't try to reinvent the wheel
 
-### Releasing Chaos
+### Building Blocks
 
-How do you release a new version of Chaos?
+There are great JVM libraries for every part of a REST stack. Chaos just glues these together.
 
-    mvn release:prepare
-    mvn release:perform
+* [Jersey](https://jersey.java.net/) for REST via annotations
+* [Guice](https://code.google.com/p/google-guice/) for dependency injection
+* [Guava](https://code.google.com/p/guava-libraries/) for lifecycle management and various utilities
+* [Jetty](http://www.eclipse.org/jetty/) as the web server and servlet container
+* [Jackson](http://wiki.fasterxml.com/JacksonHome) for JSON support
+* [Hibernate Validator](http://www.hibernate.org/subprojects/validator.html) for validating API requests
+* [Coda Hale's Metrics](https://github.com/codahale/metrics) for JVM and application metrics
+
+## Getting Started
+
+### Requirements
+
+* JDK 1.6+
+* Maven 3.0+
+
+### Example App
+
+There is an example app in src/main/scala/mesosphere/chaos/example. To run the example:
+
+    mvn compile exec:java
+
+Make requests to the example endpoints with [HTTPie](https://github.com/jkbr/httpie):
+
+    http localhost:8080/foo
+    http localhost:8080/foo name=Bunny age=42
+
+### Built in Endpoints
+
+* `/ping` - health check.
+* `/metrics` - metrics as JSON
+* `/logging` - configure log levels at runtime
+
+### Using Chaos in your Project
+
+Chaos releases are available from Mesosphere's Maven repository.
+
+#### Maven
+
+To add Chaos to a Maven project, add this to your `pom.xml`:
+
+    <properties>
+        <chaos.version>0.4.5</chaos.version>
+    </properties>
+
+    ...
+
+    <repositories>
+        <repository>
+            <id>mesosphere-public-repo</id>
+            <name>Mesosphere Public Repo</name>
+            <url>http://downloads.mesosphere.io/maven</url>
+        </repository>
+    </repositories>
+
+    ...
+
+    <dependencies>
+        <dependency>
+            <groupId>mesosphere</groupId>
+            <artifactId>chaos</artifactId>
+            <version>${chaos.version}</version>
+        </dependency>
+    </dependencies>
+
+#### SBT
+
+TODO
+
+## Getting Help
+
+If you have questions, please post on the [Chaos Users Group](https://groups.google.com/forum/?hl=en#!forum/chaos-users) email list.
+The team at [Mesosphere](http://mesosphere.io) is also happy to answer any questions.
+
+## Authors
+
+* [Tobias Knaup](https://github.com/guenter)
+* [Florian Leibert](https://github.com/florianleibert)
+
+## Current Users
+
+* [Marathon](https://github.com/mesosphere/marathon), an Apache Mesos framework for long-running services.
+* [Chronos](https://github.com/airbnb/chronos), a fault tolerant job scheduler that handles dependencies and ISO8601 based schedules.
+

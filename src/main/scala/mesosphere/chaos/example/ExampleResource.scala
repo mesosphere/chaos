@@ -3,34 +3,31 @@ package mesosphere.chaos.example
 import javax.ws.rs.{POST, Produces, Path, GET}
 import javax.ws.rs.core.MediaType
 import com.codahale.metrics.annotation.Timed
-import org.hibernate.validator.constraints.{Range, NotEmpty}
-import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.Valid
+import scala.util.Random
 
 /**
  * @author Tobi Knaup
  */
 
-class SampleObject {
-  @JsonProperty @Range(min = 0, max = 150, message = "ERROR") var age : Int = 0
-  @JsonProperty @NotEmpty(message = "ERROR") var name : String = ""
-}
-
 @Path("foo")
 @Produces(Array(MediaType.APPLICATION_JSON))
 class ExampleResource {
 
-  @Timed(name = "foo")
+  private final val names = Seq("Dude", "Walter", "Donny", "Jesus")
+
   @GET
-  def foo() = {
-    new SampleObject()
+  @Timed
+  def get() = {
+    val person = new Person
+    person.name = names(Random.nextInt(names.size))
+    person.age = Random.nextInt(150)
+    person
   }
 
   @POST
-  def bar(@Valid obj : SampleObject) {
-    println("YAY")
-    println(obj.age)
-    println(obj.name)
+  @Timed
+  def post(@Valid person: Person) {
+    println(person)
   }
-
 }
