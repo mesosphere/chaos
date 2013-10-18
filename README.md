@@ -42,7 +42,8 @@ There are great JVM libraries for every part of a REST stack. Chaos just glues t
 
 ### Example App
 
-There is an example app in src/main/scala/mesosphere/chaos/example. To run the example:
+There is an example app in [src/main/scala/mesosphere/chaos/example]
+(https://github.com/mesosphere/chaos/blob/master/src/main/scala/mesosphere/chaos/example/Main.scala). To run the example:
 
     mvn compile exec:java
 
