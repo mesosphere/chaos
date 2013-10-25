@@ -15,7 +15,6 @@ import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
 import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
 import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.eclipse.jetty.util.security.{Password, Constraint}
-import org.rogach.scallop._
 import scala.Array
 import scala.Some
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
@@ -25,7 +24,6 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
 
   // TODO make configurable
   val welcomeFiles = Array("index.html")
-  val resourceBase = getClass.getClassLoader.getResource("assets").toExternalForm
   private[this] val log = Logger.getLogger(getClass.getName)
 
   def configure() {
@@ -88,7 +86,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     val handler = new ResourceHandler
     handler.setDirectoriesListed(false)
     handler.setWelcomeFiles(welcomeFiles)
-    handler.setResourceBase(resourceBase)
+    handler.setResourceBase(conf.assetsUrl().toExternalForm)
     handler
   }
 
