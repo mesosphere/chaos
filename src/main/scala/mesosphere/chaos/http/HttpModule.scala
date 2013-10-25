@@ -87,6 +87,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     handler.setDirectoriesListed(false)
     handler.setWelcomeFiles(welcomeFiles)
     handler.setResourceBase(conf.assetsUrl().toExternalForm)
+    handler.setAliases(true) // Enables use of relative paths
     handler
   }
 
