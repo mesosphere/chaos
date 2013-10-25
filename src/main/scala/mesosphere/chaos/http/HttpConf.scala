@@ -1,6 +1,7 @@
 package mesosphere.chaos.http
 
 import org.rogach.scallop.ScallopConf
+import java.net.URL
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -28,4 +29,14 @@ trait HttpConf extends ScallopConf {
       "is expected where the username must not contain ':'",
     default = None, noshort = true)
 
+  lazy val assetsFileSystemPath = opt[String]("assets_path",
+    descr = "Set a local file system path to load assets from, " +
+      "instead of loading them from the packaged jar.",
+    default = None, noshort = true)
+
+  def assetsUrl(): URL = assetsFileSystemPath.get match {
+    case Some(path: String) => new URL(s"file://$path")
+    // Default to the asset path in the jar
+    case _ => getClass.getClassLoader.getResource("assets")
+  }
 }
