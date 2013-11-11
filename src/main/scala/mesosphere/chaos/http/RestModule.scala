@@ -11,6 +11,7 @@ import com.google.inject.servlet.ServletModule
 import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolationExceptionMapper}
 import javax.inject.Named
 import com.google.inject.name.Names
+import mesosphere.chaos.ServiceStatus
 
 /**
  * Base class for REST modules.
@@ -25,6 +26,8 @@ class RestModule extends ServletModule {
   val metricsUrl = "/metrics"
   val loggingUrl = "/logging"
   val guiceContainerUrl = "/*"
+  val statusUrl = "/status"
+  val statusCatchAllUrl = "/status/*"
 
   protected override def configureServlets() {
     bind(classOf[ObjectMapper])
@@ -35,7 +38,11 @@ class RestModule extends ServletModule {
     bind(classOf[MetricsServlet]).in(Scopes.SINGLETON)
     bind(classOf[LogConfigServlet]).in(Scopes.SINGLETON)
     bind(classOf[ConstraintViolationExceptionMapper]).in(Scopes.SINGLETON)
+    bind(classOf[ServiceStatus]).asEagerSingleton()
+    bind(classOf[ServiceStatusServlet]).in(Scopes.SINGLETON)
 
+    serve(statusUrl).`with`(classOf[ServiceStatusServlet])
+    serve(statusCatchAllUrl).`with`(classOf[ServiceStatusServlet])
     serve(pingUrl).`with`(classOf[PingServlet])
     serve(metricsUrl).`with`(classOf[MetricsServlet])
     serve(loggingUrl).`with`(classOf[LogConfigServlet])
