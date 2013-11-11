@@ -11,6 +11,7 @@ import com.google.inject.servlet.ServletModule
 import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolationExceptionMapper}
 import javax.inject.Named
 import com.google.inject.name.Names
+import mesosphere.chaos.ServiceStatus
 
 /**
  * Base class for REST modules.

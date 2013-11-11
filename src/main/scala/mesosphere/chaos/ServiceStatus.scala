@@ -1,4 +1,4 @@
-package mesosphere.chaos.http
+package mesosphere.chaos
 
 import java.util.concurrent.atomic.AtomicBoolean
 

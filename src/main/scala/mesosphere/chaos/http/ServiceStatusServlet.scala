@@ -2,6 +2,7 @@ package mesosphere.chaos.http
 
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpServlet}
 import javax.inject.Inject
+import mesosphere.chaos.ServiceStatus
 
 /**
  * An HTTP servlets which allows turning a service off without killing it.
