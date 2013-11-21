@@ -4,14 +4,14 @@ import com.codahale.metrics.servlets.MetricsServlet
 import com.google.inject.{Singleton, Provides, Scopes}
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.{Module, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import javax.validation.Validation
 import com.google.inject.servlet.ServletModule
 import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolationExceptionMapper}
 import javax.inject.Named
-import com.google.inject.name.Names
 import mesosphere.chaos.ServiceStatus
+import scala.collection.JavaConverters._
 
 /**
  * Base class for REST modules.
@@ -29,11 +29,11 @@ class RestModule extends ServletModule {
   val statusUrl = "/status"
   val statusCatchAllUrl = "/status/*"
 
-  protected override def configureServlets() {
-    bind(classOf[ObjectMapper])
-      .annotatedWith(Names.named("restMapper"))
-      .toInstance(new ObjectMapper())
+  // Override this if you want to add your own modules
+  val jacksonModules: Iterable[Module] = Seq(DefaultScalaModule)
 
+
+  protected override def configureServlets() {
     bind(classOf[PingServlet]).in(Scopes.SINGLETON)
     bind(classOf[MetricsServlet]).in(Scopes.SINGLETON)
     bind(classOf[LogConfigServlet]).in(Scopes.SINGLETON)
@@ -52,7 +52,15 @@ class RestModule extends ServletModule {
   @Provides
   @Singleton
   def provideJacksonJsonProvider(@Named("restMapper") mapper: ObjectMapper): JacksonJsonProvider = {
-    mapper.registerModule(DefaultScalaModule)
     new JacksonMessageBodyProvider(mapper, Validation.buildDefaultValidatorFactory().getValidator)
+  }
+
+  @Provides
+  @Singleton
+  @Named("restMapper")
+  def provideRestMapper(): ObjectMapper = {
+    val mapper = new ObjectMapper()
+    mapper.registerModules(jacksonModules.asJava)
+    mapper
   }
 }
