@@ -30,4 +30,7 @@ class ExampleResource {
   def post(@Valid person: Person) {
     println(person)
   }
+
+  @Path("bar")
+  def bar() = new ExampleSubResource
 }

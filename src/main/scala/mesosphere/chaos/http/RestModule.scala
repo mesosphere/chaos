@@ -25,6 +25,7 @@ class RestModule extends ServletModule {
   val pingUrl = "/ping"
   val metricsUrl = "/metrics"
   val loggingUrl = "/logging"
+  val helpUrl = "/help*"
   val guiceContainerUrl = "/*"
   val statusUrl = "/status"
   val statusCatchAllUrl = "/status/*"
@@ -37,6 +38,7 @@ class RestModule extends ServletModule {
     bind(classOf[PingServlet]).in(Scopes.SINGLETON)
     bind(classOf[MetricsServlet]).in(Scopes.SINGLETON)
     bind(classOf[LogConfigServlet]).in(Scopes.SINGLETON)
+    bind(classOf[HelpServlet]).in(Scopes.SINGLETON)
     bind(classOf[ConstraintViolationExceptionMapper]).in(Scopes.SINGLETON)
     bind(classOf[ServiceStatus]).asEagerSingleton()
     bind(classOf[ServiceStatusServlet]).in(Scopes.SINGLETON)
@@ -46,6 +48,7 @@ class RestModule extends ServletModule {
     serve(pingUrl).`with`(classOf[PingServlet])
     serve(metricsUrl).`with`(classOf[MetricsServlet])
     serve(loggingUrl).`with`(classOf[LogConfigServlet])
+    serve(helpUrl).`with`(classOf[HelpServlet])
     serve(guiceContainerUrl).`with`(classOf[GuiceContainer])
   }
 

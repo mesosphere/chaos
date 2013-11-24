@@ -33,7 +33,7 @@ trait App extends scala.App {
     }
   }
 
-  def run(classes: Iterable[Class[_ <: Service]]) {
+  def run(classes: Class[_ <: Service]*) {
     initConf()
 
     sys.addShutdownHook(shutdownAndWait())

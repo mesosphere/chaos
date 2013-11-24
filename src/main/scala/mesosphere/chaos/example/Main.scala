@@ -21,5 +21,5 @@ object Main extends App {
   lazy val conf = new ScallopConf(args)
     with HttpConf with AppConfiguration
 
-  run(List(classOf[HttpService]))
+  run(classOf[HttpService])
 }
