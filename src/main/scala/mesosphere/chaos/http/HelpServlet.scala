@@ -30,13 +30,9 @@ class HelpServlet @Inject()(injector: Injector, container: GuiceContainer) exten
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
+    <meta charset="utf-8">
     <title>Logger Config</title>
-    <style>
-    body {
-      font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
-      font-weight: 400;
-    }
-    </style>
+    <link rel="stylesheet" href="/css/chaos.css">
   </head>
 
   <body>
@@ -64,18 +60,17 @@ class HelpServlet @Inject()(injector: Injector, container: GuiceContainer) exten
     val writer = resp.getWriter
     try {
       writer.print(htmlHeader)
-      writer.println("<h2>Help</h2>")
-      writer.println("<table>")
+      writer.println("<h1>Help</h1>")
+      writer.println("<table><thead><tr><th>Resource</th><th>Description</th></tr></thead><tbody>")
       for (key <- pathMap.keySet.to[SortedSet]) {
         val method = pathMap(key)
         writer.println(s"""
       <tr>
-        <td>${key._2}</td>
-        <td><a href="$basePath/${key._2}${key._1}">${key._1}</a></td>
-        <td>${method.getDeclaringClass.getName}#${method.getName}()</td>
+        <td><a href="$basePath/${key._2}${key._1}">${key._2} ${key._1}</a></td>
+        <td><code>${method.getDeclaringClass.getName}#${method.getName}()</code></td>
       </tr>""")
       }
-      writer.println("</table>")
+      writer.println("</tbody></table>")
       writer.print(htmlFooter)
     }
     finally {
