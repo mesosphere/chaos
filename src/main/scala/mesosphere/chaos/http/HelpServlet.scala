@@ -21,7 +21,8 @@ class HelpServlet @Inject()(injector: Injector, container: GuiceContainer) exten
 
   // TODO configure path
   val basePath = "/help"
-  val pathPattern = s"$basePath/([A-Z]+)(/.+)".r
+  val basePathPattern = s"^$basePath/?$$".r
+  val pathPattern = s"^$basePath/([A-Z]+)(/.+)".r
   lazy val pathMap = makePathMap()
 
   val htmlHeader =
@@ -51,7 +52,7 @@ class HelpServlet @Inject()(injector: Injector, container: GuiceContainer) exten
 
   override def doGet(req: HttpServletRequest, resp: HttpServletResponse) = {
     req.getRequestURI match {
-      case `basePath` => all(req, resp)
+      case basePathPattern() => all(req, resp)
       case pathPattern(method, path) => handleMethod(method, path, req, resp)
       case _ => resp.setStatus(HttpServletResponse.SC_NOT_FOUND)
     }
