@@ -1,7 +1,7 @@
 package mesosphere.chaos.http
 
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}
-import javax.inject.Inject
+import javax.inject.{Named, Inject}
 import com.google.inject.Injector
 import scala.collection.JavaConverters._
 import javax.ws.rs._
@@ -17,12 +17,12 @@ import java.net.URLDecoder
  * @author Tobi Knaup
  */
 
-class HelpServlet @Inject()(injector: Injector, container: GuiceContainer) extends HttpServlet {
+class HelpServlet @Inject()(@Named("helpPathPrefix") pathPrefix: String,
+                            injector: Injector,
+                            container: GuiceContainer) extends HttpServlet {
 
-  // TODO configure path
-  val basePath = "/help"
-  val basePathPattern = s"^$basePath/?$$".r
-  val pathPattern = s"^$basePath/([A-Z]+)(/.+)".r
+  val basePathPattern = s"^$pathPrefix/?$$".r
+  val pathPattern = s"^$pathPrefix/([A-Z]+)(/.+)".r
   lazy val pathMap = makePathMap()
 
   val htmlHeader =
@@ -66,7 +66,7 @@ class HelpServlet @Inject()(injector: Injector, container: GuiceContainer) exten
         val method = pathMap(key)
         writer.println(s"""
       <tr>
-        <td><a href="$basePath/${key._2}${key._1}">${key._2} ${key._1}</a></td>
+        <td><a href="$pathPrefix/${key._2}${key._1}">${key._2} ${key._1}</a></td>
         <td><code>${method.getDeclaringClass.getName}#${method.getName}()</code></td>
       </tr>""")
       }

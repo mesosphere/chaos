@@ -12,6 +12,7 @@ import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolat
 import javax.inject.Named
 import mesosphere.chaos.ServiceStatus
 import scala.collection.JavaConverters._
+import com.google.inject.name.Names
 
 /**
  * Base class for REST modules.
@@ -25,7 +26,7 @@ class RestModule extends ServletModule {
   val pingUrl = "/ping"
   val metricsUrl = "/metrics"
   val loggingUrl = "/logging"
-  val helpUrl = "/help*"
+  val helpUrl = "/help"
   val guiceContainerUrl = "/*"
   val statusUrl = "/status"
   val statusCatchAllUrl = "/status/*"
@@ -43,12 +44,14 @@ class RestModule extends ServletModule {
     bind(classOf[ServiceStatus]).asEagerSingleton()
     bind(classOf[ServiceStatusServlet]).in(Scopes.SINGLETON)
 
+    bind(classOf[String]).annotatedWith(Names.named("helpPathPrefix")).toInstance(helpUrl)
+
     serve(statusUrl).`with`(classOf[ServiceStatusServlet])
     serve(statusCatchAllUrl).`with`(classOf[ServiceStatusServlet])
     serve(pingUrl).`with`(classOf[PingServlet])
     serve(metricsUrl).`with`(classOf[MetricsServlet])
     serve(loggingUrl).`with`(classOf[LogConfigServlet])
-    serve(helpUrl).`with`(classOf[HelpServlet])
+    serve(helpUrl + "*").`with`(classOf[HelpServlet])
     serve(guiceContainerUrl).`with`(classOf[GuiceContainer])
   }
 
