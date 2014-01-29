@@ -26,6 +26,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   val welcomeFiles = Array("index.html")
   private[this] val log = Logger.getLogger(getClass.getName)
 
+  protected val resourceCacheControlHeader: Option[String] = None
+
   def configure() {
     bind(classOf[HttpService])
     bind(classOf[GuiceServletConfig]).asEagerSingleton()
@@ -85,6 +87,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   def provideResourceHandler() = {
     val handler = new ResourceHandler
     handler.setDirectoriesListed(false)
+    resourceCacheControlHeader foreach handler.setCacheControl
     handler.setWelcomeFiles(welcomeFiles)
     handler.setResourceBase(conf.assetsUrl().toExternalForm)
     handler.setAliases(true) // Enables use of relative paths
