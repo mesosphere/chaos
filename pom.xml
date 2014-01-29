@@ -52,7 +52,7 @@
         <connection>scm:git:git://github.com/mesosphere/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:mesosphere/${project.artifactId}.git</developerConnection>
         <url>http://github.com/mesosphere/${project.artifactId}/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>chaos-0.5.2-SNAPSHOT</tag>
     </scm>
 
 
