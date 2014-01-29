@@ -3,7 +3,7 @@
 
     <groupId>mesosphere</groupId>
     <artifactId>chaos</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3-SNAPSHOT</version>
     <inceptionYear>2013</inceptionYear>
 
     <prerequisites>
@@ -52,7 +52,7 @@
         <connection>scm:git:git://github.com/mesosphere/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:mesosphere/${project.artifactId}.git</developerConnection>
         <url>http://github.com/mesosphere/${project.artifactId}/tree/master</url>
-        <tag>chaos-0.5.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
 
