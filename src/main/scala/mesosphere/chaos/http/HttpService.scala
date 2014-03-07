@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.AbstractIdleService
 import com.google.inject.Inject
 import org.eclipse.jetty.server.Server
 import java.util.logging.Logger
+import scala.util.{Failure, Try}
 
 /**
  * Wrapper for starting and stopping the HttpServer.
@@ -14,7 +15,14 @@ class HttpService @Inject()(val server : Server, val log : Logger) extends Abstr
 
   def startUp() {
     log.fine("Starting up HttpServer.")
-    server.start()
+    Try(
+      server.start()
+    ).recoverWith {
+      case e: java.net.BindException => {
+        log.severe(e.getMessage)
+        Try(server.stop())
+      }
+    }
   }
 
   def shutDown() {
