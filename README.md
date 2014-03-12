@@ -90,10 +90,6 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
         </dependency>
     </dependencies>
 
-#### SBT
-
-TODO
-
 ## Getting Help
 
 If you have questions, please post on the [Chaos Users Group](https://groups.google.com/forum/?hl=en#!forum/chaos-users) email list.
@@ -108,4 +104,3 @@ The team at [Mesosphere](http://mesosphere.io) is also happy to answer any quest
 
 * [Marathon](https://github.com/mesosphere/marathon), an Apache Mesos framework for long-running services.
 * [Chronos](https://github.com/airbnb/chronos), a fault tolerant job scheduler that handles dependencies and ISO8601 based schedules.
-
