@@ -3,7 +3,7 @@ package mesosphere.chaos.http
 import com.google.common.util.concurrent.AbstractIdleService
 import com.google.inject.Inject
 import org.eclipse.jetty.server.Server
-import java.util.logging.Logger
+import java.util.logging.{Level, Logger}
 import scala.util.{Failure, Try}
 
 /**
@@ -11,7 +11,7 @@ import scala.util.{Failure, Try}
  * @author Florian Leibert (flo@leibert.de)
  * @author Tobi Knaup (tobi@knaup.me)
  */
-class HttpService @Inject()(val server : Server, val log : Logger) extends AbstractIdleService {
+class HttpService @Inject()(val server: Server, val log: Logger) extends AbstractIdleService {
 
   def startUp() {
     log.fine("Starting up HttpServer.")
@@ -19,7 +19,7 @@ class HttpService @Inject()(val server : Server, val log : Logger) extends Abstr
       server.start()
     ).recoverWith {
       case e: java.net.BindException => {
-        log.severe(e.getMessage)
+        log.log(Level.SEVERE, "Failed to start HTTP service", e)
         Try(server.stop())
       }
     }
