@@ -90,6 +90,18 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
         </dependency>
     </dependencies>
 
+#### SBT
+
+To add Chaos to an SBT project, add this to your `build.sbt`:
+
+    resolvers += "Mesosphere Public Repo" at "http://downloads.mesosphere.io/maven"
+    
+    libraryDependencies ++= Seq(
+      "mesosphere" % "chaos" % "0.4.5",
+      "com.sun.jersey" % "jersey-bundle" % "1.17.1"
+    )
+
+
 ## Getting Help
 
 If you have questions, please post on the [Chaos Users Group](https://groups.google.com/forum/?hl=en#!forum/chaos-users) email list.
