@@ -67,7 +67,7 @@ Chaos releases are available from Mesosphere's Maven repository.
 To add Chaos to a Maven project, add this to your `pom.xml`:
 
     <properties>
-        <chaos.version>0.4.5</chaos.version>
+        <chaos.version>0.5.2</chaos.version>
     </properties>
 
     ...
@@ -89,6 +89,18 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
             <version>${chaos.version}</version>
         </dependency>
     </dependencies>
+
+#### SBT
+
+To add Chaos to an SBT project, add this to your `build.sbt`:
+
+    resolvers += "Mesosphere Public Repo" at "http://downloads.mesosphere.io/maven"
+    
+    libraryDependencies ++= Seq(
+      "mesosphere" % "chaos" % "0.5.2",
+      "com.sun.jersey" % "jersey-bundle" % "1.17.1"
+    )
+
 
 ## Getting Help
 
