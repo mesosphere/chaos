@@ -4,8 +4,8 @@ import com.google.inject.{Module, Guice}
 import org.rogach.scallop.ScallopConf
 import com.google.common.util.concurrent.Service
 import org.apache.log4j.Logger
-import java.io.FileInputStream
 import scala.collection.mutable.ListBuffer
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 /**
  * @author Florian Leibert (flo@leibert.de)
@@ -13,6 +13,10 @@ import scala.collection.mutable.ListBuffer
  */
 trait App extends scala.App {
   import scala.collection.JavaConverters._
+
+  // Handle java.util.logging with SLF4J
+  SLF4JBridgeHandler.removeHandlersForRootLogger()
+  SLF4JBridgeHandler.install()
 
   lazy val injector = Guice.createInjector(modules().asJava)
   val services = ListBuffer.empty[Service]

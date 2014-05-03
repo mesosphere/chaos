@@ -27,6 +27,7 @@
         <jackson.version>2.3.1</jackson.version>
         <hibernate.version>5.0.1.Final</hibernate.version>
         <mustache.version>0.8.12</mustache.version>
+        <slf4j.version>1.7.7</slf4j.version>
 
         <!-- test deps versions -->
         <junit.version>4.11</junit.version>
@@ -195,7 +196,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.7</version>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
