@@ -1,17 +1,18 @@
 package mesosphere.chaos.http
 
 import org.eclipse.jetty.server.NCSARequestLog
-import java.util.logging.Logger
-import javax.inject.Inject
+import org.apache.log4j.Logger
 import org.eclipse.jetty.util.StringUtil
 
 /**
  * @author Tobi Knaup
  */
 
-class ChaosRequestLog @Inject()(log: Logger) extends NCSARequestLog {
+class ChaosRequestLog extends NCSARequestLog {
 
   val lineSepLength = StringUtil.__LINE_SEPARATOR.length
+
+  private[this] val log = Logger.getLogger(getClass.getName)
 
   override def write(requestEntry: String) {
     // Remove line separator because jul will add it

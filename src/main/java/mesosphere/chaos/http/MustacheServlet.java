@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * A base class for servlets that render using the Mustache template templating system.  Subclasses
@@ -68,7 +67,7 @@ public abstract class MustacheServlet extends HttpServlet {
       response.setStatus(status);
       response.setContentType(contentType);
     } catch (MustacheException e) {
-      LOG.log(Level.SEVERE, "Template exception.", e);
+      LOG.error("Template exception.", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }

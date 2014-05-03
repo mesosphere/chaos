@@ -7,8 +7,4 @@ import org.rogach.scallop.ScallopConf
  */
 trait AppConfiguration extends ScallopConf {
 
-  lazy val logConfigFile = opt[String]("log_config",
-    descr = "The path to the log config",
-    required = false,
-    noshort = true)
 }

@@ -25,12 +25,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-import java.util.logging.LoggingMXBean;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 
 /**
  * Servlet that allows for dynamic adjustment of the http configuration.
@@ -40,13 +41,14 @@ import java.util.logging.LoggingMXBean;
  */
 public class LogConfigServlet extends MustacheServlet {
   private static final List<String> LOG_LEVELS = Lists.newArrayList(
-      Level.SEVERE.getName(),
-      Level.WARNING.getName(),
-      Level.INFO.getName(),
-      Level.CONFIG.getName(),
-      Level.FINE.getName(),
-      Level.FINER.getName(),
-      Level.FINEST.getName(),
+      Level.OFF.toString(),
+      Level.FATAL.toString(),
+      Level.ERROR.toString(),
+      Level.WARN.toString(),
+      Level.INFO.toString(),
+      Level.DEBUG.toString(),
+      Level.TRACE.toString(),
+      Level.ALL.toString(),
       "INHERIT" // Display value for a null level, the logger inherits from its ancestor.
   );
 
@@ -70,7 +72,6 @@ public class LogConfigServlet extends MustacheServlet {
   protected void displayPage(final HttpServletRequest req, HttpServletResponse resp,
                              final boolean posted) throws ServletException, IOException {
 
-    LoggingMXBean logBean = LogManager.getLoggingMXBean();
     String configChange = null;
 
     if (posted) {
@@ -78,7 +79,7 @@ public class LogConfigServlet extends MustacheServlet {
       String loggerLevel = req.getParameter("level");
       if (loggerName != null && loggerLevel != null) {
         Logger logger = Logger.getLogger(loggerName);
-        Level newLevel = loggerLevel.equals("INHERIT") ? null : Level.parse(loggerLevel);
+        Level newLevel = loggerLevel.equals("INHERIT") ? null : Level.toLevel(loggerLevel);
         logger.setLevel(newLevel);
         if (newLevel != null) {
           maybeAdjustHandlerLevels(logger, newLevel);
@@ -89,8 +90,12 @@ public class LogConfigServlet extends MustacheServlet {
     }
 
     List<LoggerConfig> loggerConfigs = Lists.newArrayList();
-    for (String logger : logBean.getLoggerNames()) {
-      loggerConfigs.add(new LoggerConfig(logger, logBean.getLoggerLevel(logger)));
+    Enumeration loggersEnum = LogManager.getCurrentLoggers();
+
+    while (loggersEnum.hasMoreElements()) {
+      Logger logger = (Logger) loggersEnum.nextElement();
+      String level = (logger.getLevel() == null) ? null : logger.getLevel().toString();
+      loggerConfigs.add(new LoggerConfig(logger.getName(), level));
     }
     Collections.sort(loggerConfigs);
 
@@ -98,14 +103,9 @@ public class LogConfigServlet extends MustacheServlet {
   }
 
   private void maybeAdjustHandlerLevels(Logger logger, Level newLevel) {
-    do {
-      for (Handler handler : logger.getHandlers()) {
-        Level handlerLevel = handler.getLevel();
-        if (newLevel.intValue() < handlerLevel.intValue()) {
-          handler.setLevel(newLevel);
-        }
-      }
-    } while (logger.getUseParentHandlers() && (logger = logger.getParent()) != null);
+    if (newLevel.toInt() < logger.getLevel().toInt()) {
+      logger.setLevel(newLevel);
+    }
   }
 
   private static class LoggerConfig implements Comparable {

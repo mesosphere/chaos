@@ -3,7 +3,7 @@ package mesosphere.chaos
 import com.google.inject.{Module, Guice}
 import org.rogach.scallop.ScallopConf
 import com.google.common.util.concurrent.Service
-import java.util.logging.{Logger, LogManager}
+import org.apache.log4j.Logger
 import java.io.FileInputStream
 import scala.collection.mutable.ListBuffer
 
@@ -22,15 +22,8 @@ trait App extends scala.App {
 
   def modules(): Iterable[_ <: Module]
 
-  def configureLogging(file: String) {
-    LogManager.getLogManager.readConfiguration(new FileInputStream(file))
-  }
-
   def initConf() {
     conf().afterInit()
-    if (conf().logConfigFile.isSupplied) {
-      configureLogging(conf().logConfigFile())
-    }
   }
 
   def run(classes: Class[_ <: Service]*) {

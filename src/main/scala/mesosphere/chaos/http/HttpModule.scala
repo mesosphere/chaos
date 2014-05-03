@@ -5,7 +5,7 @@ import com.google.inject._
 import com.google.inject.servlet.GuiceFilter
 import java.io.File
 import java.util
-import java.util.logging.Logger
+import org.apache.log4j.Logger
 import javax.servlet.DispatcherType
 import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
@@ -59,7 +59,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       log.info("Adding SSL support.")
       server.addConnector(sslConnector.get)
     } else {
-      log.warning("No SSL support configured.")
+      log.warn("No SSL support configured.")
     }
     server
   }
