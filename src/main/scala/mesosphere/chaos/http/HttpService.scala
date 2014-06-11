@@ -11,20 +11,19 @@ import scala.util.Try
  * @author Florian Leibert (flo@leibert.de)
  * @author Tobi Knaup (tobi@knaup.me)
  */
-class HttpService @Inject()(val server: Server) extends AbstractIdleService {
+class HttpService @Inject() (val server: Server) extends AbstractIdleService {
 
   private[this] val log = Logger.getLogger(getClass.getName)
 
   def startUp() {
     log.debug("Starting up HttpServer.")
     Try(
-      server.start()
-    ).recoverWith {
-      case e: java.net.BindException => {
-        log.fatal("Failed to start HTTP service", e)
-        Try(server.stop())
+      server.start()).recoverWith {
+        case e: java.net.BindException => {
+          log.fatal("Failed to start HTTP service", e)
+          Try(server.stop())
+        }
       }
-    }
   }
 
   def shutDown() {

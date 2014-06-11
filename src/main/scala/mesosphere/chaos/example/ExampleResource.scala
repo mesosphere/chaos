@@ -1,6 +1,6 @@
 package mesosphere.chaos.example
 
-import javax.ws.rs.{POST, Produces, Path, GET}
+import javax.ws.rs.{ POST, Produces, Path, GET }
 import javax.ws.rs.core.MediaType
 import com.codahale.metrics.annotation.Timed
 import javax.validation.Valid

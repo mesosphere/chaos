@@ -366,8 +366,36 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- TODO: Add maven/scalastyle-check -->
+            <plugin>
+              <groupId>org.scalariform</groupId>
+              <artifactId>scalariform-maven-plugin</artifactId>
+              <version>0.1.2</version>
+              <executions>
+                <execution>
+                  <phase>process-sources</phase>
+                  <goals>
+                    <goal>format</goal>
+                  </goals>
+                  <configuration>
+                    <IndentWithTabs>false</IndentWithTabs>
+                    <IndentSpaces>2</IndentSpaces>
+                    <AlignParameters>true</AlignParameters>
+                    <DoubleIndentClassDeclaration>true</DoubleIndentClassDeclaration>
+                    <MultilineScaladocCommentsStartOnFirstLine>false</MultilineScaladocCommentsStartOnFirstLine>
+                    <PlaceScaladocAsterisksBeneathSecondAsterisk>true</PlaceScaladocAsterisksBeneathSecondAsterisk>
+                    <PreserveDanglingCloseParenthesis>true</PreserveDanglingCloseParenthesis>
+                    <CompactControlReadability>true</CompactControlReadability>
+                    <AlignSingleLineCaseStatements>true</AlignSingleLineCaseStatements>
+                    <PreserveSpaceBeforeArguments>true</PreserveSpaceBeforeArguments>
+                    <SpaceBeforeColon>false</SpaceBeforeColon>
+                    <SpaceInsideBrackets>false</SpaceInsideBrackets>
+                    <SpaceInsideParentheses>false</SpaceInsideParentheses>
+                    <SpacesWithinPatternBinders>true</SpacesWithinPatternBinders>
+                    <FormatXml>true</FormatXml>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>${maven-clean-plugin.version}</version>

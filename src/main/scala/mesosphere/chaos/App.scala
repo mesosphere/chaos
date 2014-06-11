@@ -1,6 +1,6 @@
 package mesosphere.chaos
 
-import com.google.inject.{Module, Guice}
+import com.google.inject.{ Module, Guice }
 import org.rogach.scallop.ScallopConf
 import com.google.common.util.concurrent.Service
 import org.apache.log4j.Logger

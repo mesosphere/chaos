@@ -1,6 +1,6 @@
 package mesosphere.chaos.example
 
-import javax.ws.rs.{Produces, GET}
+import javax.ws.rs.{ Produces, GET }
 import scala.Array
 import javax.ws.rs.core.MediaType
 
