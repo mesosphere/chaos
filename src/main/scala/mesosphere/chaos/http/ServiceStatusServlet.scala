@@ -1,6 +1,6 @@
 package mesosphere.chaos.http
 
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpServlet}
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse, HttpServlet }
 import javax.inject.Inject
 import mesosphere.chaos.ServiceStatus
 
@@ -12,8 +12,8 @@ import mesosphere.chaos.ServiceStatus
  *
  */
 
-class ServiceStatusServlet @Inject()(val status: ServiceStatus)
-  extends HttpServlet {
+class ServiceStatusServlet @Inject() (val status: ServiceStatus)
+    extends HttpServlet {
 
   private final val CONTENT_TYPE = "text/plain"
   private final val CACHE_CONTROL = "Cache-Control"
@@ -37,8 +37,7 @@ class ServiceStatusServlet @Inject()(val status: ServiceStatus)
         case false => "off"
       }
       writer.println(response)
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }

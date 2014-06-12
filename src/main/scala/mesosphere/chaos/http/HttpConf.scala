@@ -17,16 +17,16 @@ trait HttpConf extends ScallopConf {
     noshort = true)
 
   lazy val sslKeystorePath = opt[String]("ssl_keystore_path",
-    descr = "Provides the keystore, if supplied, SSL is enabled",
+    descr = "Path to the keystore, if supplied, SSL is enabled",
     default = None, noshort = true)
 
   lazy val sslKeystorePassword = opt[String]("ssl_keystore_password",
     descr = "The password for the keystore", default = None, noshort = true)
 
   lazy val httpCredentials = opt[String]("http_credentials",
-    descr = "Credentials for accessing the http service." +
-      "If empty, anyone can access the HTTP endpoint. A username:password" +
-      "is expected where the username must not contain ':'",
+    descr = "Credentials for accessing the http service. " +
+      "If empty, anyone can access the HTTP endpoint. A username:password " +
+      "pair is expected where the username must not contain ':'",
     default = None, noshort = true)
 
   lazy val assetsFileSystemPath = opt[String]("assets_path",

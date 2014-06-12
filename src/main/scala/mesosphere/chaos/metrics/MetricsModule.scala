@@ -1,6 +1,6 @@
 package mesosphere.chaos.metrics
 
-import com.google.inject.{Singleton, Provides, AbstractModule}
+import com.google.inject.{ Singleton, Provides, AbstractModule }
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchAdapter
 import com.codahale.metrics.jetty8.InstrumentedHandler

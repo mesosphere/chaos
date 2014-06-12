@@ -1,14 +1,14 @@
 package mesosphere.chaos.http
 
 import com.codahale.metrics.servlets.MetricsServlet
-import com.google.inject.{Singleton, Provides, Scopes}
+import com.google.inject.{ Singleton, Provides, Scopes }
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
-import com.fasterxml.jackson.databind.{Module, ObjectMapper}
+import com.fasterxml.jackson.databind.{ Module, ObjectMapper }
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import javax.validation.Validation
 import com.google.inject.servlet.ServletModule
-import mesosphere.chaos.validation.{JacksonMessageBodyProvider, ConstraintViolationExceptionMapper}
+import mesosphere.chaos.validation.{ JacksonMessageBodyProvider, ConstraintViolationExceptionMapper }
 import javax.inject.Named
 import mesosphere.chaos.ServiceStatus
 import scala.collection.JavaConverters._
@@ -33,7 +33,6 @@ class RestModule extends ServletModule {
 
   // Override this if you want to add your own modules
   val jacksonModules: Iterable[Module] = Seq(DefaultScalaModule)
-
 
   protected override def configureServlets() {
     bind(classOf[PingServlet]).in(Scopes.SINGLETON)

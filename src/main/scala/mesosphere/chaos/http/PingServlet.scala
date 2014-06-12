@@ -1,6 +1,6 @@
 package mesosphere.chaos.http
 
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpServlet}
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse, HttpServlet }
 
 /**
  * An HTTP servlets which outputs a {@code text/plain} {@code "pong"} response.
@@ -29,8 +29,7 @@ class PingServlet extends HttpServlet {
     val writer = resp.getWriter
     try {
       writer.println(CONTENT)
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }
