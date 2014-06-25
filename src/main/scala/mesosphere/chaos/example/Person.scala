@@ -2,9 +2,6 @@ package mesosphere.chaos.example
 
 import org.hibernate.validator.constraints.{NotEmpty, Range}
 
-/**
- * @author Tobi Knaup
- */
 
 class Person {
   @NotEmpty

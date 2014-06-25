@@ -6,10 +6,6 @@ import com.codahale.metrics.annotation.Timed
 import javax.validation.Valid
 import scala.util.Random
 
-/**
- * @author Tobi Knaup
- */
-
 @Path("foo")
 @Produces(Array(MediaType.APPLICATION_JSON))
 class ExampleResource {

@@ -13,9 +13,6 @@ import scala.collection.{SortedSet, mutable}
 import scala.Some
 import java.net.URLDecoder
 
-/**
- * @author Tobi Knaup
- */
 
 class HelpServlet @Inject()(@Named("helpPathPrefix") pathPrefix: String,
                             injector: Injector,

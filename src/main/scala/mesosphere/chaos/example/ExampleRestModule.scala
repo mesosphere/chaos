@@ -3,10 +3,6 @@ package mesosphere.chaos.example
 import com.google.inject.Scopes
 import mesosphere.chaos.http.RestModule
 
-/**
- * @author Tobi Knaup
- */
-
 class ExampleRestModule extends RestModule {
 
   protected override def configureServlets() {

@@ -8,8 +8,6 @@ import scala.util.Try
 
 /**
  * Wrapper for starting and stopping the HttpServer.
- * @author Florian Leibert (flo@leibert.de)
- * @author Tobi Knaup (tobi@knaup.me)
  */
 class HttpService @Inject() (val server: Server) extends AbstractIdleService {
 

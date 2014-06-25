@@ -7,10 +7,6 @@ import org.apache.log4j.Logger
 import scala.collection.mutable.ListBuffer
 import org.slf4j.bridge.SLF4JBridgeHandler
 
-/**
- * @author Florian Leibert (flo@leibert.de)
- * @author Tobi Knaup (tobi@knaup.me)
- */
 trait App extends scala.App {
   import scala.collection.JavaConverters._
 

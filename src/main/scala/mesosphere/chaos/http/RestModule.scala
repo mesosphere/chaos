@@ -16,8 +16,6 @@ import com.google.inject.name.Names
 
 /**
  * Base class for REST modules.
- *
- * @author Tobi Knaup
  */
 
 class RestModule extends ServletModule {

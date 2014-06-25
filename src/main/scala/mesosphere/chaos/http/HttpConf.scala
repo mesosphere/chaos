@@ -3,9 +3,6 @@ package mesosphere.chaos.http
 import org.rogach.scallop.ScallopConf
 import java.net.URL
 
-/**
- * @author Florian Leibert (flo@leibert.de)
- */
 
 trait HttpConf extends ScallopConf {
   lazy val httpPort = opt[Int]("http_port",

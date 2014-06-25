@@ -6,10 +6,6 @@ import com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchAdapter
 import com.codahale.metrics.jetty8.InstrumentedHandler
 import org.eclipse.jetty.servlet.ServletContextHandler
 
-/**
- * @author Tobi Knaup
- */
-
 class MetricsModule extends AbstractModule {
 
   def configure() {
