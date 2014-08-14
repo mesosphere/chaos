@@ -41,6 +41,7 @@
         <maven-surefire-plugins.version>2.14.1</maven-surefire-plugins.version>
         <scala-maven-plugin.version>3.1.0</scala-maven-plugin.version>
         <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
+        <maven-release-plugin.version>2.5</maven-release-plugin.version>
 
         <exec.mainClass>mesosphere.chaos.example.Main</exec.mainClass>
     </properties>
@@ -416,6 +417,11 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>${exec-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
