@@ -34,17 +34,18 @@ trait App extends scala.App {
     classes.foreach(c => {
       val service = injector.getInstance(c)
       services += service
-      service.start()
+      service.startAsync()
     })
   }
 
   def shutdown() {
     log.info("Shutting down services")
-    services.foreach(_.stop())
+    services.foreach(_.stopAsync())
   }
 
   def shutdownAndWait() {
+    shutdown()
     log.info("Waiting for services to shut down")
-    services.foreach(_.stopAndWait())
+    services.foreach(_.awaitTerminated())
   }
 }

@@ -1,7 +1,6 @@
 package mesosphere.chaos.example
 
-import org.hibernate.validator.constraints.{NotEmpty, Range}
-
+import org.hibernate.validator.constraints.{ NotEmpty, Range }
 
 class Person {
   @NotEmpty

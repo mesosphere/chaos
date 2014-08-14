@@ -11,14 +11,13 @@ import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
 import org.eclipse.jetty.server.handler.ResourceHandler
-import org.eclipse.jetty.server.handler.{RequestLogHandler, HandlerCollection}
-import org.eclipse.jetty.servlet.{DefaultServlet, ServletContextHandler}
+import org.eclipse.jetty.server.handler.{ RequestLogHandler, HandlerCollection }
+import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.ssl.SslContextFactory
-import org.eclipse.jetty.util.security.{Password, Constraint}
+import org.eclipse.jetty.util.security.{ Password, Constraint }
 import scala.Array
 import scala.Some
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
-
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
 
@@ -67,8 +66,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   @Provides
   @Singleton
   def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
-                               logHandler: RequestLogHandler,
-                               resourceHandler: ResourceHandler): HandlerCollection = {
+    logHandler: RequestLogHandler,
+    resourceHandler: ResourceHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
     handlers.setHandlers(Array(resourceHandler, instrumentedHandler, logHandler))
     handlers
@@ -143,7 +142,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
 
 //TODO(*): Allow alternative loading from file.
 class KeyValueLoginService()
-  extends MappedLoginService {
+    extends MappedLoginService {
 
   def loadUser(username: String): UserIdentity = {
     return null

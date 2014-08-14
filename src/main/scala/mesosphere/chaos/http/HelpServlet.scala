@@ -1,7 +1,7 @@
 package mesosphere.chaos.http
 
-import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}
-import javax.inject.{Named, Inject}
+import javax.servlet.http.{ HttpServletResponse, HttpServletRequest, HttpServlet }
+import javax.inject.{ Named, Inject }
 import com.google.inject.Injector
 import scala.collection.JavaConverters._
 import javax.ws.rs._
@@ -9,14 +9,13 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer
 import scala.io.Source
 import net.liftweb.markdown.ActuariusTransformer
 import java.lang.reflect.Method
-import scala.collection.{SortedSet, mutable}
+import scala.collection.{ SortedSet, mutable }
 import scala.Some
 import java.net.URLDecoder
 
-
-class HelpServlet @Inject()(@Named("helpPathPrefix") pathPrefix: String,
-                            injector: Injector,
-                            container: GuiceContainer) extends HttpServlet {
+class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
+    injector: Injector,
+    container: GuiceContainer) extends HttpServlet {
 
   val basePathPattern = s"^$pathPrefix/?$$".r
   val pathPattern = s"^$pathPrefix/([A-Z]+)(/.+)".r
@@ -69,8 +68,7 @@ class HelpServlet @Inject()(@Named("helpPathPrefix") pathPrefix: String,
       }
       writer.println("</tbody></table>")
       writer.print(htmlFooter)
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }
@@ -106,8 +104,7 @@ class HelpServlet @Inject()(@Named("helpPathPrefix") pathPrefix: String,
           writer.println(s"No resource defined for $httpMethod $path")
         }
       }
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }

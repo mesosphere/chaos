@@ -3,7 +3,6 @@ package mesosphere.chaos.http
 import org.rogach.scallop.ScallopConf
 import java.net.URL
 
-
 trait HttpConf extends ScallopConf {
   lazy val httpPort = opt[Int]("http_port",
     descr = "The port to listen on for HTTP requests", default = Some(8080),

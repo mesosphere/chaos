@@ -3,7 +3,7 @@
 
     <groupId>mesosphere</groupId>
     <artifactId>chaos</artifactId>
-    <version>0.5.7-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
     <inceptionYear>2013</inceptionYear>
 
     <prerequisites>
@@ -15,17 +15,17 @@
 
         <!-- language versions -->
         <java.abi>1.6</java.abi>
-        <scala.version>2.10.2</scala.version>
+        <scala.version>2.10.4</scala.version>
 
         <!-- runtime deps versions -->
-        <guava.version>14.0.1</guava.version>
+        <guava.version>17.0</guava.version>
         <guice.version>3.0</guice.version>
-        <scallop.version>0.9.4</scallop.version>
+        <scallop.version>0.9.5</scallop.version>
         <jersey.version>1.18.1</jersey.version>
-        <metrics.version>3.0.0</metrics.version>
-        <jetty.version>8.1.11.v20130520</jetty.version>
-        <jackson.version>2.3.1</jackson.version>
-        <hibernate.version>5.0.1.Final</hibernate.version>
+        <metrics.version>3.0.2</metrics.version>
+        <jetty.version>8.1.15.v20140411</jetty.version>
+        <jackson.version>2.3.3</jackson.version>
+        <hibernate.version>5.1.2.Final</hibernate.version>
         <mustache.version>0.8.12</mustache.version>
         <slf4j.version>1.7.7</slf4j.version>
 
@@ -369,7 +369,7 @@
             <plugin>
               <groupId>org.scalariform</groupId>
               <artifactId>scalariform-maven-plugin</artifactId>
-              <version>0.1.2</version>
+              <version>0.1.4</version>
               <executions>
                 <execution>
                   <phase>process-sources</phase>
