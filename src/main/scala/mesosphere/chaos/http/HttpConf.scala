@@ -19,6 +19,10 @@ trait HttpConf extends ScallopConf {
   lazy val sslKeystorePassword = opt[String]("ssl_keystore_password",
     descr = "The password for the keystore", default = None, noshort = true)
 
+  lazy val shiroIni = opt[String]("shiro_ini",
+    descr = "The shiro.ini auth configuration file. See http://shiro.apache.org/",
+    default = None, noshort = true)
+
   lazy val httpCredentials = opt[String]("http_credentials",
     descr = "Credentials for accessing the http service. " +
       "If empty, anyone can access the HTTP endpoint. A username:password " +
