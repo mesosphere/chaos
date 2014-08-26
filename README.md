@@ -4,11 +4,9 @@ A lightweight framework for writing REST services in Scala.
 
 [Chaos](https://en.wikipedia.org/wiki/Chaos_%28cosmogony%29) (Greek χάος, khaos) refers to the formless or void state preceding the creation of the universe or cosmos in the Greek creation myths. Chaos (the framework) precedes creation of a universe of services.
 
-## Another framework? COME ON!
+## Why yet another framework?
 
-<img src="http://25.media.tumblr.com/84c8ce7dd9d89bfcca79788f763cb97e/tumblr_mngx21FyhC1qa8jwfo1_500.gif" width="250" alt="COME ON!">
-
-Why yet another framework? At [Mesosphere](http://mesosphere.io) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
+At [Mesosphere](http://mesosphere.io) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
 We also experimented with [Play!](https://github.com/playframework/playframework), but it does many things besides REST, which adds unnecessary baggage.
 
 ### Design Goals
