@@ -12,6 +12,7 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
 import org.eclipse.jetty.server.handler.ResourceHandler
 import org.eclipse.jetty.server.handler.{ RequestLogHandler, HandlerCollection }
+import org.eclipse.jetty.server.nio.SelectChannelConnector
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.eclipse.jetty.util.security.{ Password, Constraint }
@@ -34,7 +35,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   }
 
   def getSSLConnector(server: Server): Option[Connector] = {
-    if (conf.sslKeystorePath.isSupplied) {
+    if (conf.sslKeystorePath.isDefined) {
       val keystore = new File(conf.sslKeystorePath())
       require(keystore.exists() && keystore.canRead,
         f"${conf.sslKeystorePath()} is invalid or not readable!")
@@ -45,21 +46,29 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       sslConnector.setPort(conf.httpsPort())
       return Some(sslConnector)
     }
+
     None
   }
 
   @Provides
   @Singleton
   def provideHttpServer(handlers: HandlerCollection) = {
-    val server = new Server(conf.httpPort())
+    val server = new Server()
     server.setHandler(handlers)
+    val httpConnector = new SelectChannelConnector()
+    httpConnector.setPort(conf.httpPort())
+
     val sslConnector = getSSLConnector(server)
     if (sslConnector.nonEmpty) {
       log.info("Adding SSL support.")
       server.addConnector(sslConnector.get)
+      httpConnector.setConfidentialPort(conf.httpsPort())
     } else {
       log.warn("No SSL support configured.")
     }
+
+    server.addConnector(httpConnector)
+
     server
   }
 
@@ -101,41 +110,50 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     handler.addServlet(classOf[DefaultServlet], "/*")
     handler.addFilter(classOf[GuiceFilter], "/*", util.EnumSet.allOf(classOf[DispatcherType]))
     handler.addEventListener(guiceServletConf)
-    if (conf.httpCredentials.isSupplied) {
-      handler.setSecurityHandler(getSecurityHandler())
-    }
+    handler.setSecurityHandler(getSecurityHandler())
     handler
   }
 
   def getSecurityHandler(): ConstraintSecurityHandler = {
-    val constraint = new Constraint(Constraint.__BASIC_AUTH, "user")
-    constraint.setAuthenticate(true)
-
-    //TODO(FL): Make configurable
-    constraint.setRoles(Array("user", "admin"))
-
-    // map the security constraint to the root path.
-    val cm = new ConstraintMapping()
-    cm.setConstraint(constraint)
-    cm.setPathSpec("/*")
-
-    // create the security handler, set the authentication to Basic
-    // and assign the realm.
     val csh = new ConstraintSecurityHandler()
-    csh.setAuthenticator(new BasicAuthenticator())
-    csh.setRealmName("chaos-realm")
-    csh.addConstraintMapping(cm);
+    if (conf.httpCredentials.isDefined) {
+      val constraint = new Constraint(Constraint.__BASIC_AUTH, "user")
+      constraint.setAuthenticate(true)
 
-    val loginService = new KeyValueLoginService
-    require(conf.httpCredentials().contains(":"),
-      f"http_credentials '${conf.httpCredentials()}' " +
-        f"must contain a ':' to separate user and password.")
-    val tup = conf.httpCredentials().split(":", 2)
+      //TODO(FL): Make configurable
+      constraint.setRoles(Array("user", "admin"))
 
-    //TODO(*): Use a MD5 instead.
-    loginService.putUser(tup(0), new Password(tup(1)), Array("user"))
+      // map the security constraint to the root path.
+      val cm = new ConstraintMapping()
+      cm.setConstraint(constraint)
+      cm.setPathSpec("/*")
 
-    csh.setLoginService(loginService)
+      csh.setAuthenticator(new BasicAuthenticator())
+      csh.setRealmName("chaos-realm")
+      csh.addConstraintMapping(cm)
+
+      val loginService = new KeyValueLoginService
+      require(conf.httpCredentials().contains(":"),
+        f"http_credentials '${conf.httpCredentials()}' " +
+          f"must contain a ':' to separate user and password.")
+      val tup = conf.httpCredentials().split(":", 2)
+
+      //TODO(*): Use a MD5 instead.
+      loginService.putUser(tup(0), new Password(tup(1)), Array("user"))
+
+      csh.setLoginService(loginService)
+    }
+
+    if (conf.sslKeystorePath.isDefined) {
+      val httpsConstraint = new Constraint()
+      httpsConstraint.setDataConstraint(Constraint.DC_CONFIDENTIAL)
+
+      val httpsConstraintMapping = new ConstraintMapping()
+      httpsConstraintMapping.setConstraint(httpsConstraint)
+      httpsConstraintMapping.setPathSpec("/*")
+      csh.addConstraintMapping(httpsConstraintMapping)
+    }
+
     csh
   }
 }
