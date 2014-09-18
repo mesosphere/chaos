@@ -14,8 +14,8 @@ import scala.Some
 import java.net.URLDecoder
 
 class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
-    injector: Injector,
-    container: GuiceContainer) extends HttpServlet {
+                             injector: Injector,
+                             container: GuiceContainer) extends HttpServlet {
 
   val basePathPattern = s"^$pathPrefix/?$$".r
   val pathPattern = s"^$pathPrefix/([A-Z]+)(/.+)".r
@@ -44,9 +44,9 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
 
   override def doGet(req: HttpServletRequest, resp: HttpServletResponse) = {
     req.getRequestURI match {
-      case basePathPattern() => all(req, resp)
+      case basePathPattern()         => all(req, resp)
       case pathPattern(method, path) => handleMethod(method, path, req, resp)
-      case _ => resp.setStatus(HttpServletResponse.SC_NOT_FOUND)
+      case _                         => resp.setStatus(HttpServletResponse.SC_NOT_FOUND)
     }
   }
 
@@ -68,7 +68,8 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
       }
       writer.println("</tbody></table>")
       writer.print(htmlFooter)
-    } finally {
+    }
+    finally {
       writer.close()
     }
   }
@@ -104,7 +105,8 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
           writer.println(s"No resource defined for $httpMethod $path")
         }
       }
-    } finally {
+    }
+    finally {
       writer.close()
     }
   }
@@ -119,25 +121,26 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
 
         for (ann <- method.getAnnotations) {
           ann match {
-            case m: GET => httpMethod = Some("GET")
-            case m: POST => httpMethod = Some("POST")
-            case m: PUT => httpMethod = Some("PUT")
-            case m: DELETE => httpMethod = Some("DELETE")
-            case m: HEAD => httpMethod = Some("HEAD")
-            case m: OPTIONS => httpMethod = Some("OPTIONS")
+            case m: GET        => httpMethod = Some("GET")
+            case m: POST       => httpMethod = Some("POST")
+            case m: PUT        => httpMethod = Some("PUT")
+            case m: DELETE     => httpMethod = Some("DELETE")
+            case m: HEAD       => httpMethod = Some("HEAD")
+            case m: OPTIONS    => httpMethod = Some("OPTIONS")
             case pathAnn: Path => methodPath = s"/${pathAnn.value}"
-            case _ =>
+            case _             =>
           }
         }
 
         val path = Option(klass.getAnnotation(classOf[Path])) match {
           case Some(ann) => s"$pathPrefix/${ann.value}$methodPath"
-          case None => s"$pathPrefix$methodPath"
+          case None      => s"$pathPrefix$methodPath"
         }
 
         if (httpMethod.isDefined) {
           pathMap((path, httpMethod.get)) = method
-        } else if (methodPath.nonEmpty) {
+        }
+        else if (methodPath.nonEmpty) {
           // Sub-resources have a Path annotation but no HTTP method
           handleClass(path, method.getReturnType)
         }

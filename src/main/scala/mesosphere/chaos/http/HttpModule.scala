@@ -57,7 +57,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     if (sslConnector.nonEmpty) {
       log.info("Adding SSL support.")
       server.addConnector(sslConnector.get)
-    } else {
+    }
+    else {
       log.warn("No SSL support configured.")
     }
     server
@@ -66,8 +67,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   @Provides
   @Singleton
   def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
-    logHandler: RequestLogHandler,
-    resourceHandler: ResourceHandler): HandlerCollection = {
+                               logHandler: RequestLogHandler,
+                               resourceHandler: ResourceHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
     handlers.setHandlers(Array(resourceHandler, instrumentedHandler, logHandler))
     handlers

@@ -15,8 +15,8 @@ import scala.collection.JavaConverters._
 import com.google.inject.name.Names
 
 /**
- * Base class for REST modules.
- */
+  * Base class for REST modules.
+  */
 
 class RestModule extends ServletModule {
 
@@ -67,3 +67,4 @@ class RestModule extends ServletModule {
     mapper
   }
 }
+

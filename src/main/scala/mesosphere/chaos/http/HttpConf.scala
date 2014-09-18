@@ -33,6 +33,6 @@ trait HttpConf extends ScallopConf {
   def assetsUrl(): URL = assetsFileSystemPath.get match {
     case Some(path: String) => new URL(s"file:$path")
     // Default to the asset path in the jar
-    case _ => getClass.getClassLoader.getResource("assets")
+    case _                  => getClass.getClassLoader.getResource("assets")
   }
 }

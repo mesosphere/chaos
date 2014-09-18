@@ -7,8 +7,8 @@ import org.apache.log4j.Logger
 import scala.util.Try
 
 /**
- * Wrapper for starting and stopping the HttpServer.
- */
+  * Wrapper for starting and stopping the HttpServer.
+  */
 class HttpService @Inject() (val server: Server) extends AbstractIdleService {
 
   private[this] val log = Logger.getLogger(getClass.getName)

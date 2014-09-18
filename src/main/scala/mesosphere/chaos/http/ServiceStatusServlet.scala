@@ -5,12 +5,12 @@ import javax.inject.Inject
 import mesosphere.chaos.ServiceStatus
 
 /**
- * An HTTP servlets which allows turning a service off without killing it.
- * Thus it can still finish serving requests but it can be prevented that new
- * requests access it. It returns a {@code text/plain} response indicating if
- * the service is turned on or off.
- *
- */
+  * An HTTP servlets which allows turning a service off without killing it.
+  * Thus it can still finish serving requests but it can be prevented that new
+  * requests access it. It returns a {@code text/plain} response indicating if
+  * the service is turned on or off.
+  *
+  */
 
 class ServiceStatusServlet @Inject() (val status: ServiceStatus)
     extends HttpServlet {
@@ -33,11 +33,12 @@ class ServiceStatusServlet @Inject() (val status: ServiceStatus)
     val writer = resp.getWriter
     try {
       val response = status.isOn.get() match {
-        case true => "on"
+        case true  => "on"
         case false => "off"
       }
       writer.println(response)
-    } finally {
+    }
+    finally {
       writer.close()
     }
   }
@@ -46,9 +47,11 @@ class ServiceStatusServlet @Inject() (val status: ServiceStatus)
     val pathInfo = req.getPathInfo()
     if (pathInfo.endsWith("/on")) {
       status.isOn.set(true)
-    } else if (pathInfo.endsWith("/off")) {
+    }
+    else if (pathInfo.endsWith("/off")) {
       status.isOn.set(false)
-    } else {
+    }
+    else {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND,
         "Invalid URL")
       return
