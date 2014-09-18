@@ -1,17 +1,17 @@
 package mesosphere.chaos.http
 
-import javax.servlet.http.{ HttpServletResponse, HttpServletRequest, HttpServlet }
-import javax.inject.{ Named, Inject }
 import com.google.inject.Injector
-import scala.collection.JavaConverters._
-import javax.ws.rs._
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer
-import scala.io.Source
 import net.liftweb.markdown.ActuariusTransformer
-import java.lang.reflect.Method
+import scala.collection.JavaConverters._
 import scala.collection.{ SortedSet, mutable }
-import scala.Some
+import scala.io.Source
+import scala.language.existentials
+import javax.inject.{ Named, Inject }
+import java.lang.reflect.Method
 import java.net.URLDecoder
+import javax.servlet.http.{ HttpServletResponse, HttpServletRequest, HttpServlet }
+import javax.ws.rs._
 
 class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
                              injector: Injector,
