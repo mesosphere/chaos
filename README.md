@@ -36,14 +36,14 @@ There are great JVM libraries for every part of a REST stack. Chaos just glues t
 ### Requirements
 
 * JDK 1.6+
-* Maven 3.0+
+* SBT 0.13.x+
 
 ### Example App
 
 There is an example app in [src/main/scala/mesosphere/chaos/example]
 (https://github.com/mesosphere/chaos/blob/master/src/main/scala/mesosphere/chaos/example/Main.scala). To run the example:
 
-    mvn compile exec:java
+    sbt run
 
 Make requests to the example endpoints with [HTTPie](https://github.com/jkbr/httpie):
 
