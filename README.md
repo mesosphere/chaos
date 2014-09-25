@@ -6,7 +6,7 @@ A lightweight framework for writing REST services in Scala.
 
 ## Why yet another framework?
 
-At [Mesosphere](http://mesosphere.io) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
+At [Mesosphere](http://mesosphere.com) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
 We also experimented with [Play!](https://github.com/playframework/playframework), but it does many things besides REST, which adds unnecessary baggage.
 
 ### Design Goals
@@ -103,7 +103,7 @@ To add Chaos to an SBT project, add this to your `build.sbt`:
 ## Getting Help
 
 If you have questions, please post on the [Chaos Users Group](https://groups.google.com/forum/?hl=en#!forum/chaos-users) email list.
-The team at [Mesosphere](http://mesosphere.io) is also happy to answer any questions.
+The team at [Mesosphere](http://mesosphere.com) is also happy to answer any questions.
 
 ## Authors
 
