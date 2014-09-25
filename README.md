@@ -74,7 +74,7 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
         <repository>
             <id>mesosphere-public-repo</id>
             <name>Mesosphere Public Repo</name>
-            <url>http://downloads.mesosphere.io/maven</url>
+            <url>http://downloads.mesosphere.com/maven</url>
         </repository>
     </repositories>
 
@@ -92,7 +92,7 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
 
 To add Chaos to an SBT project, add this to your `build.sbt`:
 
-    resolvers += "Mesosphere Public Repo" at "http://downloads.mesosphere.io/maven"
+    resolvers += "Mesosphere Public Repo" at "http://downloads.mesosphere.com/maven"
     
     libraryDependencies ++= Seq(
       "mesosphere" % "chaos" % "0.5.2",

@@ -37,7 +37,7 @@ object ChaosBuild extends Build {
     scalacOptions in Compile ++= Seq("-encoding", "UTF-8", "-target:jvm-1.6", "-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
     javacOptions in Compile ++= Seq("-encoding", "UTF-8", "-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-Xlint:deprecation"),
     resolvers ++= Seq(
-      "Mesosphere Public Repo"    at "http://downloads.mesosphere.io/maven",
+      "Mesosphere Public Repo"    at "http://downloads.mesosphere.com/maven",
       "Twitter Maven2 Repository" at "http://maven.twttr.com/",
       "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     )
@@ -46,7 +46,7 @@ object ChaosBuild extends Build {
   lazy val publishSettings = S3Resolver.defaults ++ Seq(
     publishTo := Some(s3resolver.value(
       "Mesosphere Public Repo (S3)",
-      s3("downloads.mesosphere.io/maven")
+      s3("downloads.mesosphere.com/maven")
     ))
   )
 
