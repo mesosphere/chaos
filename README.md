@@ -45,6 +45,10 @@ There is an example app in [src/main/scala/mesosphere/chaos/example]
 
     sbt run
 
+You can start the example with command line options as well:
+
+    sbt "run --shiro_ini file:./src/main/scala/mesosphere/chaos/example/shiro.ini"
+
 Make requests to the example endpoints with [HTTPie](https://github.com/jkbr/httpie):
 
     http localhost:8080/foo

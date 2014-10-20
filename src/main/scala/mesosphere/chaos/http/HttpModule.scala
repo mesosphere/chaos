@@ -1,23 +1,27 @@
 package mesosphere.chaos.http
 
+import java.io.File
+import java.util.EnumSet
+import javax.servlet.DispatcherType
+import scala.Array
+import scala.Some
+
 import com.codahale.metrics.jetty8.InstrumentedHandler
 import com.google.inject._
 import com.google.inject.servlet.GuiceFilter
-import java.io.File
-import java.util
 import org.apache.log4j.Logger
-import javax.servlet.DispatcherType
+import org.apache.shiro.web.env.EnvironmentLoaderListener
+import org.apache.shiro.web.servlet.ShiroFilter
 import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
 import org.eclipse.jetty.server.handler.ResourceHandler
 import org.eclipse.jetty.server.handler.{ RequestLogHandler, HandlerCollection }
+import org.eclipse.jetty.server.session.SessionHandler
+import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.eclipse.jetty.util.security.{ Password, Constraint }
-import scala.Array
-import scala.Some
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
 
@@ -97,18 +101,33 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   @Provides
   @Singleton
   def provideHandler(guiceServletConf: GuiceServletConfig): ServletContextHandler = {
-    val handler = new ServletContextHandler()
+    val handler = new ServletContextHandler(ServletContextHandler.SESSIONS)
+    handler.setSessionHandler(new SessionHandler())
+
     // Filters don't run if no servlets are bound, so we bind the DefaultServlet
     handler.addServlet(classOf[DefaultServlet], "/*")
-    handler.addFilter(classOf[GuiceFilter], "/*", util.EnumSet.allOf(classOf[DispatcherType]))
-    handler.addEventListener(guiceServletConf)
-    if (conf.httpCredentials.isSupplied) {
-      handler.setSecurityHandler(getSecurityHandler())
+
+    if (conf.shiroIni.isSupplied) {
+      // The ShiroFilter must be added before the GuiceFilter
+      // The GuiceFilter sets up the Shiro authorization code and when the rest endpoint is intercepted it expects
+      // that the authentication postion done by the ShiroFilter has already happened
+      handler.addFilter(classOf[ShiroFilter], "/*",
+        EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR));
+      handler.setInitParameter("shiroConfigLocations", conf.shiroIni());
+      handler.addEventListener(new EnvironmentLoaderListener)
     }
+
+    handler.addFilter(classOf[GuiceFilter], "/*", EnumSet.allOf(classOf[DispatcherType]))
+    handler.addEventListener(guiceServletConf)
+
+    if (conf.httpCredentials.isSupplied) {
+      handler.setSecurityHandler(getLegacySecurityHandler())
+    }
+
     handler
   }
 
-  def getSecurityHandler(): ConstraintSecurityHandler = {
+  def getLegacySecurityHandler(): ConstraintSecurityHandler = {
     val constraint = new Constraint(Constraint.__BASIC_AUTH, "user")
     constraint.setAuthenticate(true)
 

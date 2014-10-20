@@ -95,6 +95,12 @@ object Dependencies {
     metricsJetty % "compile",
     metricsServlets % "compile",
 
+    shiroJersey % "compile",
+    shiroWeb % "compile",
+    bujiPac4j % "compile",
+    pac4jHttp % "compile",
+    pac4jSaml % "compile",
+
     scallop % "compile",
     mustache % "compile",
     slf4jLog4j % "compile",
@@ -119,6 +125,10 @@ object Dependency {
     val Jetty = "8.1.15.v20140411"
     val Jackson = "2.4.1"
     val Hibernate = "5.1.2.Final"
+    val Shiro = "1.2.3"
+    val ShiroJersey = "0.1.0"
+    val BujiPac4j = "1.2.3"
+    val Pac4j = "1.6.0"
     val Mustache = "0.8.12"
     val Slf4j = "1.7.7"
 
@@ -146,6 +156,14 @@ object Dependency {
   val metricsJvm = "com.codahale.metrics" % "metrics-jvm" % V.Metrics
   val metricsJetty = "com.codahale.metrics" % "metrics-jetty8" % V.Metrics
   val metricsServlets = "com.codahale.metrics" % "metrics-servlets" % V.Metrics
+
+  val shiroJersey = "org.secnod.shiro" % "shiro-jersey" % V.ShiroJersey
+  val shiroWeb = "org.apache.shiro" % "shiro-web" % V.Shiro
+  val bujiPac4j = "io.buji" % "buji-pac4j" % V.BujiPac4j
+  val pac4jHttp = "org.pac4j" % "pac4j-http" % V.Pac4j
+  val pac4jSaml = "org.pac4j" % "pac4j-saml" % V.Pac4j excludeAll(
+    ExclusionRule(organization = "org.slf4j")
+  )
 
   val scallop = "org.rogach" %% "scallop" % V.Scallop
   val mustache = "com.github.spullara.mustache.java" % "compiler" % V.Mustache
