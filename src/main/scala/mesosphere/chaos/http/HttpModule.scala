@@ -4,6 +4,7 @@ import com.codahale.metrics.jetty8.InstrumentedHandler
 import com.google.inject._
 import com.google.inject.servlet.GuiceFilter
 import java.io.File
+import java.net.InetSocketAddress
 import java.util
 import org.apache.log4j.Logger
 import javax.servlet.DispatcherType
@@ -51,7 +52,14 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   @Provides
   @Singleton
   def provideHttpServer(handlers: HandlerCollection) = {
-    val server = new Server(conf.httpPort())
+
+    val socketAddress =
+      if (conf.httpAddress.isSupplied)
+        new InetSocketAddress(conf.httpAddress(), conf.httpPort())
+      else
+        new InetSocketAddress(conf.httpPort())
+
+    val server = new Server(socketAddress)
     server.setHandler(handlers)
     val sslConnector = getSSLConnector(server)
     if (sslConnector.nonEmpty) {
