@@ -4,6 +4,11 @@ import org.rogach.scallop.ScallopConf
 import java.net.URL
 
 trait HttpConf extends ScallopConf {
+
+  lazy val httpAddress = opt[String]("http_address",
+    descr = "The address to listen on for HTTP requests", default = None,
+    noshort = true)
+
   lazy val httpPort = opt[Int]("http_port",
     descr = "The port to listen on for HTTP requests", default = Some(8080),
     noshort = true)
