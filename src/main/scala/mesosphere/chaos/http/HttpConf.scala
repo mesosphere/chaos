@@ -17,18 +17,28 @@ trait HttpConf extends ScallopConf {
     descr = "The port to listen on for HTTPS requests", default = Some(8443),
     noshort = true)
 
-  lazy val sslKeystorePath = opt[String]("ssl_keystore_path",
+  lazy val sslKeystorePath = opt[String](
+    "ssl_keystore_path",
     descr = "Path to the keystore, if supplied, SSL is enabled",
-    default = None, noshort = true)
+    default = sslKeystorePathEnvValue,
+    noshort = true
+  )
 
-  lazy val sslKeystorePassword = opt[String]("ssl_keystore_password",
-    descr = "The password for the keystore", default = None, noshort = true)
+  lazy val sslKeystorePassword = opt[String](
+    "ssl_keystore_password",
+    descr = "The password for the keystore",
+    default = sslKeystorePasswordEnvValue,
+    noshort = true
+  )
 
-  lazy val httpCredentials = opt[String]("http_credentials",
+  lazy val httpCredentials = opt[String](
+    "http_credentials",
     descr = "Credentials for accessing the http service. " +
       "If empty, anyone can access the HTTP endpoint. A username:password " +
       "pair is expected where the username must not contain ':'",
-    default = None, noshort = true)
+    default = httpCredentialsEnvValue,
+    noshort = true
+  )
 
   lazy val assetsFileSystemPath = opt[String]("assets_path",
     descr = "Set a local file system path to load assets from, " +
@@ -40,4 +50,14 @@ trait HttpConf extends ScallopConf {
     // Default to the asset path in the jar
     case _                  => getClass.getClassLoader.getResource("assets")
   }
+
+  private lazy val httpCredentialsEnvName: String = "MESOSPHERE_HTTP_CREDENTIALS"
+  private lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(httpCredentialsEnvName)
+
+  private lazy val sslKeystorePathEnvName: String = "MESOSPHERE_KEYSTORE_PATH"
+  private lazy val sslKeystorePathEnvValue: Option[String] = sys.env.get(sslKeystorePathEnvName)
+
+  private lazy val sslKeystorePasswordEnvName: String = "MESOSPHERE_KEYSTORE_PASS"
+  private lazy val sslKeystorePasswordEnvValue: Option[String] = sys.env.get(sslKeystorePasswordEnvName)
+
 }
