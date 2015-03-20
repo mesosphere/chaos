@@ -24,8 +24,6 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   val welcomeFiles = Array("index.html")
   private[this] val log = Logger.getLogger(getClass.getName)
 
-  private val REALM = "Mesosphere"
-
   protected val resourceCacheControlHeader: Option[String] = None
 
   def configure() {
@@ -122,7 +120,6 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     conf.httpCredentials.get flatMap createSecurityHandler foreach handler.setSecurityHandler
     handler
   }
-  
 
   def createSecurityHandler(httpCredentials: String): Option[ConstraintSecurityHandler] = {
 
@@ -136,7 +133,6 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
         None
     }
   }
-  
 
   def createSecurityHandler(userName: String, password: String): ConstraintSecurityHandler = {
 
@@ -155,20 +151,19 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     // and assign the realm.
     val csh = new ConstraintSecurityHandler()
     csh.setAuthenticator(new BasicAuthenticator())
-    csh.setRealmName(REALM)
+    csh.setRealmName(conf.httpCredentialsRealm())
     csh.addConstraintMapping(cm)
     csh.setLoginService(createLoginService(userName, password))
 
     csh
   }
-  
 
   def createLoginService(userName: String, password: String): LoginService = {
 
     val loginService = new MappedLoginService() {
       override def loadUser(username: String): UserIdentity = null
       override def loadUsers(): Unit = {}
-      override def getName: String = REALM
+      override def getName: String = conf.httpCredentialsRealm()
     }
 
     //TODO(*): Use a MD5 instead.

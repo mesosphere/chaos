@@ -40,6 +40,13 @@ trait HttpConf extends ScallopConf {
     noshort = true
   )
 
+  lazy val httpCredentialsRealm = opt[String](
+    "http_realm",
+    descr = "The security realm (aka 'area') associated with the credentials",
+    default = Option("Mesosphere"),
+    noshort = true
+  )
+
   lazy val assetsFileSystemPath = opt[String]("assets_path",
     descr = "Set a local file system path to load assets from, " +
       "instead of loading them from the packaged jar.",
@@ -51,13 +58,14 @@ trait HttpConf extends ScallopConf {
     case _                  => getClass.getClassLoader.getResource("assets")
   }
 
-  private lazy val httpCredentialsEnvName: String = "MESOSPHERE_HTTP_CREDENTIALS"
-  private lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(httpCredentialsEnvName)
+  lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(HttpConf.httpCredentialsEnvName)
+  lazy val sslKeystorePathEnvValue: Option[String] = sys.env.get(HttpConf.sslKeystorePathEnvName)
+  lazy val sslKeystorePasswordEnvValue: Option[String] = sys.env.get(HttpConf.sslKeystorePasswordEnvName)
 
-  private lazy val sslKeystorePathEnvName: String = "MESOSPHERE_KEYSTORE_PATH"
-  private lazy val sslKeystorePathEnvValue: Option[String] = sys.env.get(sslKeystorePathEnvName)
+}
 
-  private lazy val sslKeystorePasswordEnvName: String = "MESOSPHERE_KEYSTORE_PASS"
-  private lazy val sslKeystorePasswordEnvValue: Option[String] = sys.env.get(sslKeystorePasswordEnvName)
-
+object HttpConf {
+  val httpCredentialsEnvName: String = "MESOSPHERE_HTTP_CREDENTIALS"
+  val sslKeystorePathEnvName: String = "MESOSPHERE_KEYSTORE_PATH"
+  val sslKeystorePasswordEnvName: String = "MESOSPHERE_KEYSTORE_PASS"
 }
