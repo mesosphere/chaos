@@ -17,18 +17,35 @@ trait HttpConf extends ScallopConf {
     descr = "The port to listen on for HTTPS requests", default = Some(8443),
     noshort = true)
 
-  lazy val sslKeystorePath = opt[String]("ssl_keystore_path",
+  lazy val sslKeystorePath = opt[String](
+    "ssl_keystore_path",
     descr = "Path to the keystore, if supplied, SSL is enabled",
-    default = None, noshort = true)
+    default = sslKeystorePathEnvValue,
+    noshort = true
+  )
 
-  lazy val sslKeystorePassword = opt[String]("ssl_keystore_password",
-    descr = "The password for the keystore", default = None, noshort = true)
+  lazy val sslKeystorePassword = opt[String](
+    "ssl_keystore_password",
+    descr = "The password for the keystore",
+    default = sslKeystorePasswordEnvValue,
+    noshort = true
+  )
 
-  lazy val httpCredentials = opt[String]("http_credentials",
+  lazy val httpCredentials = opt[String](
+    "http_credentials",
     descr = "Credentials for accessing the http service. " +
       "If empty, anyone can access the HTTP endpoint. A username:password " +
       "pair is expected where the username must not contain ':'",
-    default = None, noshort = true)
+    default = httpCredentialsEnvValue,
+    noshort = true
+  )
+
+  lazy val httpCredentialsRealm = opt[String](
+    "http_realm",
+    descr = "The security realm (aka 'area') associated with the credentials",
+    default = Option("Mesosphere"),
+    noshort = true
+  )
 
   lazy val assetsFileSystemPath = opt[String]("assets_path",
     descr = "Set a local file system path to load assets from, " +
@@ -40,4 +57,15 @@ trait HttpConf extends ScallopConf {
     // Default to the asset path in the jar
     case _                  => getClass.getClassLoader.getResource("assets")
   }
+
+  lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(HttpConf.httpCredentialsEnvName)
+  lazy val sslKeystorePathEnvValue: Option[String] = sys.env.get(HttpConf.sslKeystorePathEnvName)
+  lazy val sslKeystorePasswordEnvValue: Option[String] = sys.env.get(HttpConf.sslKeystorePasswordEnvName)
+
+}
+
+object HttpConf {
+  val httpCredentialsEnvName: String = "MESOSPHERE_HTTP_CREDENTIALS"
+  val sslKeystorePathEnvName: String = "MESOSPHERE_KEYSTORE_PATH"
+  val sslKeystorePasswordEnvName: String = "MESOSPHERE_KEYSTORE_PASS"
 }

@@ -16,8 +16,6 @@ import org.eclipse.jetty.server.handler.{ RequestLogHandler, HandlerCollection }
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.eclipse.jetty.util.security.{ Password, Constraint }
-import scala.Array
-import scala.Some
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
@@ -35,18 +33,26 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   }
 
   def getSSLConnector(server: Server): Option[Connector] = {
-    if (conf.sslKeystorePath.isSupplied) {
-      val keystore = new File(conf.sslKeystorePath())
-      require(keystore.exists() && keystore.canRead,
-        f"${conf.sslKeystorePath()} is invalid or not readable!")
-      val contextFactory = new SslContextFactory()
-      contextFactory.setKeyStorePath(conf.sslKeystorePath())
-      contextFactory.setKeyStorePassword(conf.sslKeystorePassword())
-      val sslConnector = new SslSelectChannelConnector(contextFactory)
-      sslConnector.setPort(conf.httpsPort())
-      return Some(sslConnector)
-    }
-    None
+    for {
+      keystorePath <- conf.sslKeystorePath.get
+      keystorePassword <- conf.sslKeystorePassword.get
+      connector = createSSLConnector(keystorePath, keystorePassword)
+    } yield connector
+  }
+
+  def createSSLConnector(keystorePath: String, keystorePassword: String): SslSelectChannelConnector = {
+    val keystore = new File(keystorePath)
+    require(keystore.exists() && keystore.canRead,
+      f"${conf.sslKeystorePath()} is invalid or not readable!")
+
+    val contextFactory = new SslContextFactory()
+    contextFactory.setKeyStorePath(keystorePath)
+    contextFactory.setKeyStorePassword(keystorePassword)
+
+    val sslConnector = new SslSelectChannelConnector(contextFactory)
+    sslConnector.setPort(conf.httpsPort())
+
+    sslConnector
   }
 
   @Provides
@@ -110,13 +116,26 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     handler.addServlet(classOf[DefaultServlet], "/*")
     handler.addFilter(classOf[GuiceFilter], "/*", util.EnumSet.allOf(classOf[DispatcherType]))
     handler.addEventListener(guiceServletConf)
-    if (conf.httpCredentials.isSupplied) {
-      handler.setSecurityHandler(getSecurityHandler())
-    }
+
+    conf.httpCredentials.get flatMap createSecurityHandler foreach handler.setSecurityHandler
     handler
   }
 
-  def getSecurityHandler(): ConstraintSecurityHandler = {
+  def createSecurityHandler(httpCredentials: String): Option[ConstraintSecurityHandler] = {
+
+    val credentialsPattern = "(.+):(.+)".r
+
+    httpCredentials match {
+      case credentialsPattern(userName, password) =>
+        Option(createSecurityHandler(userName, password))
+      case _ =>
+        log.error(s"The HTTP credentials must be specified in the form of 'user:password'.")
+        None
+    }
+  }
+
+  def createSecurityHandler(userName: String, password: String): ConstraintSecurityHandler = {
+
     val constraint = new Constraint(Constraint.__BASIC_AUTH, "user")
     constraint.setAuthenticate(true)
 
@@ -132,32 +151,25 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     // and assign the realm.
     val csh = new ConstraintSecurityHandler()
     csh.setAuthenticator(new BasicAuthenticator())
-    csh.setRealmName("chaos-realm")
-    csh.addConstraintMapping(cm);
+    csh.setRealmName(conf.httpCredentialsRealm())
+    csh.addConstraintMapping(cm)
+    csh.setLoginService(createLoginService(userName, password))
 
-    val loginService = new KeyValueLoginService
-    require(conf.httpCredentials().contains(":"),
-      f"http_credentials '${conf.httpCredentials()}' " +
-        f"must contain a ':' to separate user and password.")
-    val tup = conf.httpCredentials().split(":", 2)
-
-    //TODO(*): Use a MD5 instead.
-    loginService.putUser(tup(0), new Password(tup(1)), Array("user"))
-
-    csh.setLoginService(loginService)
     csh
   }
-}
 
-//TODO(*): Allow alternative loading from file.
-class KeyValueLoginService()
-    extends MappedLoginService {
+  def createLoginService(userName: String, password: String): LoginService = {
 
-  def loadUser(username: String): UserIdentity = {
-    return null
+    val loginService = new MappedLoginService() {
+      override def loadUser(username: String): UserIdentity = null
+      override def loadUsers(): Unit = {}
+      override def getName: String = conf.httpCredentialsRealm()
+    }
+
+    //TODO(*): Use a MD5 instead.
+    loginService.putUser(userName, new Password(password), Array("user"))
+    loginService
   }
 
-  def loadUsers {
-  }
-
 }
+
