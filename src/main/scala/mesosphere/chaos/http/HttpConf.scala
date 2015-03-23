@@ -19,14 +19,18 @@ trait HttpConf extends ScallopConf {
 
   lazy val sslKeystorePath = opt[String](
     "ssl_keystore_path",
-    descr = "Path to the keystore, if supplied, SSL is enabled",
+    descr = "Path to the SSL keystore. HTTPS (SSL) " +
+      "will be enabled if this option is supplied. Requires `--ssl_keystore_password`. " +
+      "May also be specified with the `MESOSPHERE_KEYSTORE_PATH` environment variable.",
     default = sslKeystorePathEnvValue,
     noshort = true
   )
 
   lazy val sslKeystorePassword = opt[String](
     "ssl_keystore_password",
-    descr = "The password for the keystore",
+    descr = "Password for the keystore " +
+      "supplied with the `ssl_keystore_path` option. Required if `ssl_keystore_path` is supplied. " +
+      "May also be specified with the `MESOSPHERE_KEYSTORE_PASS` environment variable.",
     default = sslKeystorePasswordEnvValue,
     noshort = true
   )
@@ -35,7 +39,8 @@ trait HttpConf extends ScallopConf {
     "http_credentials",
     descr = "Credentials for accessing the http service. " +
       "If empty, anyone can access the HTTP endpoint. A username:password " +
-      "pair is expected where the username must not contain ':'",
+      "pair is expected where the username must not contain ':'. " +
+      "May also be specified with the `MESOSPHERE_HTTP_CREDENTIALS` environment variable. ",
     default = httpCredentialsEnvValue,
     noshort = true
   )
