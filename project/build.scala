@@ -1,3 +1,6 @@
+import com.amazonaws.auth.InstanceProfileCredentialsProvider
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import ohnosequences.sbt.SbtS3Resolver
 import sbt._
 import Keys._
 import sbtrelease.ReleasePlugin._
@@ -47,8 +50,10 @@ object ChaosBuild extends Build {
     publishTo := Some(s3resolver.value(
       "Mesosphere Public Repo (S3)",
       s3("downloads.mesosphere.io/maven")
-    ))
+    )),
+    SbtS3Resolver.s3credentials := new InstanceProfileCredentialsProvider()
   )
+
 
   lazy val formatSettings = scalariformSettings ++ Seq(
     ScalariformKeys.preferences := FormattingPreferences()
