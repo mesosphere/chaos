@@ -5,12 +5,21 @@ import java.net.URL
 
 trait HttpConf extends ScallopConf {
 
+  lazy val disableHttp = opt[Boolean]("disable_http",
+    descr = "Disable listening for HTTP requests completely. HTTPS is unaffected.",
+    noshort = true,
+    default = Some(false))
+
   lazy val httpAddress = opt[String]("http_address",
     descr = "The address to listen on for HTTP requests", default = None,
     noshort = true)
 
   lazy val httpPort = opt[Int]("http_port",
     descr = "The port to listen on for HTTP requests", default = Some(8080),
+    noshort = true)
+
+  lazy val httpsAddress = opt[String]("https_address",
+    descr = "The address to listen on for HTTPS requests.", default = None,
     noshort = true)
 
   lazy val httpsPort = opt[Int]("https_port",
