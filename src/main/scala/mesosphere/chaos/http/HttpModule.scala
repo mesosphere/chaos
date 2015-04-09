@@ -13,10 +13,12 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
 import org.eclipse.jetty.server.handler.ResourceHandler
 import org.eclipse.jetty.server.handler.{ RequestLogHandler, HandlerCollection }
+import org.eclipse.jetty.server.nio.SelectChannelConnector
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.eclipse.jetty.util.security.{ Password, Constraint }
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
+import org.rogach.scallop.ScallopOption
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
 
@@ -32,15 +34,64 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     bind(classOf[RequestLog]).to(classOf[ChaosRequestLog])
   }
 
-  def getSSLConnector(server: Server): Option[Connector] = {
+  @Provides
+  @Singleton
+  def provideHttpServer(handlers: HandlerCollection) = {
+
+    val server = new Server()
+    server.setHandler(handlers)
+
+    def addConnector(name: String)(connector: Option[Connector]): Unit = {
+      connector match {
+        case Some(conn) =>
+          log.info(s"Adding $name support.")
+          server.addConnector(conn)
+        case _ =>
+          log.info(s"No $name support configured.")
+      }
+    }
+
+    val httpConnector: Option[Connector] = getHTTPConnector(server)
+    addConnector("HTTP")(httpConnector)
+
+    val httpsConnector: Option[Connector] = getHTTPSConnector(server)
+    addConnector("HTTPS")(httpsConnector)
+
+    // verify connector configuration
+    (httpConnector, httpsConnector) match {
+      case (Some(_), Some(_)) =>
+        log.warn(s"Both HTTP and HTTPS support have been configured. " +
+          s"Consider disabling HTTP with --${conf.disableHttp.name}")
+      case (None, None) =>
+        throw new IllegalArgumentException(
+          "Invalid configuration: Neither HTTP nor HTTPS support has been configured.")
+      case _ =>
+      // everything seems fine
+    }
+
+    server
+  }
+
+  private[this] def getHTTPConnector(server: Server): Option[Connector] = {
+    if (!conf.disableHttp()) {
+      val connector = new SelectChannelConnector
+      configureConnectorAddress(connector, conf.httpAddress, conf.httpPort)
+      Some(connector)
+    }
+    else {
+      None
+    }
+  }
+
+  private[this] def getHTTPSConnector(server: Server): Option[Connector] = {
     for {
       keystorePath <- conf.sslKeystorePath.get
       keystorePassword <- conf.sslKeystorePassword.get
-      connector = createSSLConnector(keystorePath, keystorePassword)
+      connector = createHTTPSConnector(keystorePath, keystorePassword)
     } yield connector
   }
 
-  def createSSLConnector(keystorePath: String, keystorePassword: String): SslSelectChannelConnector = {
+  private[this] def createHTTPSConnector(keystorePath: String, keystorePassword: String): SslSelectChannelConnector = {
     val keystore = new File(keystorePath)
     require(keystore.exists() && keystore.canRead,
       f"${conf.sslKeystorePath()} is invalid or not readable!")
@@ -50,32 +101,23 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     contextFactory.setKeyStorePassword(keystorePassword)
 
     val sslConnector = new SslSelectChannelConnector(contextFactory)
-    sslConnector.setPort(conf.httpsPort())
+    configureConnectorAddress(sslConnector, conf.httpsAddress, conf.httpsPort)
 
     sslConnector
   }
 
-  @Provides
-  @Singleton
-  def provideHttpServer(handlers: HandlerCollection) = {
-
-    val socketAddress =
-      if (conf.httpAddress.isSupplied)
-        new InetSocketAddress(conf.httpAddress(), conf.httpPort())
-      else
-        new InetSocketAddress(conf.httpPort())
-
-    val server = new Server(socketAddress)
-    server.setHandler(handlers)
-    val sslConnector = getSSLConnector(server)
-    if (sslConnector.nonEmpty) {
-      log.info("Adding SSL support.")
-      server.addConnector(sslConnector.get)
+  private[this] def configureConnectorAddress(connector: Connector, addressOpt: ScallopOption[String], portOpt: ScallopOption[Int]): Unit = {
+    addressOpt.foreach { address: String =>
+      connector.setHost(address)
     }
-    else {
-      log.warn("No SSL support configured.")
+
+    portOpt.get match {
+      case Some(port) =>
+        connector.setPort(port)
+      case None =>
+        // shouldn't happen because our port configurations all have defaults
+        throw new IllegalArgumentException("Port required.")
     }
-    server
   }
 
   @Provides
