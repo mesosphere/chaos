@@ -108,7 +108,7 @@ public class LogConfigServlet extends MustacheServlet {
     }
   }
 
-  private static class LoggerConfig implements Comparable {
+  private static class LoggerConfig implements Comparable<LoggerConfig> {
     final String name;
     final String level;
 
@@ -126,12 +126,8 @@ public class LogConfigServlet extends MustacheServlet {
     }
 
     @Override
-    public int compareTo(Object o) {
-      if (o instanceof LoggerConfig) {
-        LoggerConfig otherConfig = (LoggerConfig) o;
-        return getName().compareTo(otherConfig.getName());
-      }
-      return 0;
+    public int compareTo(LoggerConfig o) {
+      return getName().compareTo(o.getName());
     }
   }
 
