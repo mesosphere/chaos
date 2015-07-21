@@ -27,7 +27,7 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
-    <title>Logger Config</title>
+    <title>Help</title>
     <link rel="stylesheet" href="/css/chaos.css">
   </head>
 
