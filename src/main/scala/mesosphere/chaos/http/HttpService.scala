@@ -15,13 +15,15 @@ class HttpService @Inject() (val server: Server) extends AbstractIdleService {
 
   def startUp() {
     log.debug("Starting up HttpServer.")
-    Try(
-      server.start()).recoverWith {
-        case e: java.net.BindException => {
-          log.fatal("Failed to start HTTP service", e)
-          Try(server.stop())
-        }
-      }
+    try {
+      server.start()
+    }
+    catch {
+      case e: Exception =>
+        log.fatal("Failed to start HTTP service", e)
+        Try(server.stop())
+        throw e
+    }
   }
 
   def shutDown() {
