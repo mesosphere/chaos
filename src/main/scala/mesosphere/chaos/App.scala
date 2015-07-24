@@ -1,10 +1,10 @@
 package mesosphere.chaos
 
+import com.google.common.util.concurrent.ServiceManager
 import com.google.inject.{ Module, Guice }
 import org.rogach.scallop.ScallopConf
 import com.google.common.util.concurrent.Service
 import org.apache.log4j.Logger
-import scala.collection.mutable.ListBuffer
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 trait App extends scala.App {
@@ -15,8 +15,8 @@ trait App extends scala.App {
   SLF4JBridgeHandler.install()
 
   lazy val injector = Guice.createInjector(modules().asJava)
-  val services = ListBuffer.empty[Service]
   private val log = Logger.getLogger(getClass.getName)
+  private var serviceManager: Option[ServiceManager] = None
 
   def conf(): ScallopConf with AppConfiguration
 
@@ -29,23 +29,37 @@ trait App extends scala.App {
   def run(classes: Class[_ <: Service]*) {
     initConf()
 
+    val services = classes.map(injector.getInstance(_))
+    val serviceManager = new ServiceManager(services.asJava)
+    this.serviceManager = Some(serviceManager)
+
     sys.addShutdownHook(shutdownAndWait())
 
-    classes.foreach(c => {
-      val service = injector.getInstance(c)
-      services += service
-      service.startAsync()
-    })
+    serviceManager.startAsync()
+
+    try {
+      serviceManager.awaitHealthy()
+    }
+    catch {
+      case e: Exception =>
+        log.fatal(s"Failed to start all services. Services by state: ${serviceManager.servicesByState()}", e)
+        shutdownAndWait()
+        System.exit(1)
+    }
+
+    log.info("All services up and running.")
   }
 
   def shutdown() {
     log.info("Shutting down services")
-    services.foreach(_.stopAsync())
+    serviceManager.foreach(_.stopAsync())
   }
 
   def shutdownAndWait() {
-    shutdown()
-    log.info("Waiting for services to shut down")
-    services.foreach(_.awaitTerminated())
+    serviceManager.foreach { serviceManager =>
+      shutdown()
+      log.info("Waiting for services to shut down")
+      serviceManager.awaitStopped()
+    }
   }
 }
