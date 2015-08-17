@@ -1,12 +1,11 @@
 package mesosphere.chaos.http
 
-import org.eclipse.jetty.server.NCSARequestLog
 import org.apache.log4j.Logger
-import org.eclipse.jetty.util.StringUtil
+import org.eclipse.jetty.server.NCSARequestLog
 
 class ChaosRequestLog extends NCSARequestLog {
 
-  val lineSepLength = StringUtil.__LINE_SEPARATOR.length
+  val lineSepLength = System.lineSeparator().length
 
   private[this] val log = Logger.getLogger(getClass.getName)
 

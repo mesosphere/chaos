@@ -1,23 +1,21 @@
 package mesosphere.chaos.http
 
-import com.codahale.metrics.jetty8.InstrumentedHandler
+import java.io.File
+import java.util
+import javax.servlet.DispatcherType
+
+import com.codahale.metrics.jetty9.InstrumentedHandler
 import com.google.inject._
 import com.google.inject.servlet.GuiceFilter
-import java.io.File
-import java.net.InetSocketAddress
-import java.util
 import org.apache.log4j.Logger
-import javax.servlet.DispatcherType
+import org.eclipse.jetty.http.HttpVersion
 import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
-import org.eclipse.jetty.server.handler.ResourceHandler
-import org.eclipse.jetty.server.handler.{ RequestLogHandler, HandlerCollection }
-import org.eclipse.jetty.server.nio.SelectChannelConnector
+import org.eclipse.jetty.server.handler.{ HandlerCollection, RequestLogHandler, ResourceHandler }
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
+import org.eclipse.jetty.util.security.{ Constraint, Password }
 import org.eclipse.jetty.util.ssl.SslContextFactory
-import org.eclipse.jetty.util.security.{ Password, Constraint }
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector
 import org.rogach.scallop.ScallopOption
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
@@ -26,7 +24,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   val welcomeFiles = Array("index.html")
   private[this] val log = Logger.getLogger(getClass.getName)
 
-  protected val resourceCacheControlHeader: Option[String] = None
+  protected val resourceCacheControlHeader: Option[String] = Some("max-age=0, must-revalidate")
 
   def configure() {
     bind(classOf[HttpService])
@@ -36,10 +34,14 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
 
   @Provides
   @Singleton
-  def provideHttpServer(handlers: HandlerCollection) = {
+  def provideHttpServer(handlers: HandlerCollection): Server = {
 
     val server = new Server()
-    server.setHandler(handlers)
+
+    val httpConfig = new HttpConfiguration()
+    httpConfig.setSecureScheme("https")
+    httpConfig.setSecurePort(conf.httpsPort())
+    httpConfig.setOutputBufferSize(32768)
 
     def addConnector(name: String)(connector: Option[Connector]): Unit = {
       connector match {
@@ -51,10 +53,10 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       }
     }
 
-    val httpConnector: Option[Connector] = getHTTPConnector(server)
+    val httpConnector: Option[Connector] = getHTTPConnector(server, httpConfig)
     addConnector("HTTP")(httpConnector)
 
-    val httpsConnector: Option[Connector] = getHTTPSConnector(server)
+    val httpsConnector: Option[Connector] = getHTTPSConnector(server, httpConfig)
     addConnector("HTTPS")(httpsConnector)
 
     // verify connector configuration
@@ -69,12 +71,13 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       // everything seems fine
     }
 
+    server.setHandler(handlers)
     server
   }
 
-  private[this] def getHTTPConnector(server: Server): Option[Connector] = {
+  private[this] def getHTTPConnector(server: Server, httpConfig: HttpConfiguration): Option[ServerConnector] = {
     if (!conf.disableHttp()) {
-      val connector = new SelectChannelConnector
+      val connector = new ServerConnector(server, new HttpConnectionFactory(httpConfig))
       configureConnectorAddress(connector, conf.httpAddress, conf.httpPort)
       Some(connector)
     }
@@ -83,7 +86,25 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     }
   }
 
-  private[this] def getHTTPSConnector(server: Server): Option[Connector] = {
+  private[this] def getHTTPSConnector(server: Server, httpConfig: HttpConfiguration): Option[ServerConnector] = {
+    def createHTTPSConnector(keystorePath: String, keystorePassword: String): ServerConnector = {
+      val keystore = new File(keystorePath)
+      require(keystore.exists() && keystore.canRead,
+        f"${conf.sslKeystorePath()} is invalid or not readable!")
+
+      val contextFactory = new SslContextFactory()
+      contextFactory.setKeyStorePath(keystorePath)
+      contextFactory.setKeyStorePassword(keystorePassword)
+
+      val sslConfig = new HttpConfiguration(httpConfig)
+      sslConfig.addCustomizer(new SecureRequestCustomizer())
+
+      val sslConnector = new ServerConnector(server, new SslConnectionFactory(contextFactory, HttpVersion.HTTP_1_1.asString()), new HttpConnectionFactory(sslConfig))
+      configureConnectorAddress(sslConnector, conf.httpsAddress, conf.httpsPort)
+
+      sslConnector
+    }
+
     for {
       keystorePath <- conf.sslKeystorePath.get
       keystorePassword <- conf.sslKeystorePassword.get
@@ -91,26 +112,9 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     } yield connector
   }
 
-  private[this] def createHTTPSConnector(keystorePath: String, keystorePassword: String): SslSelectChannelConnector = {
-    val keystore = new File(keystorePath)
-    require(keystore.exists() && keystore.canRead,
-      f"${conf.sslKeystorePath()} is invalid or not readable!")
-
-    val contextFactory = new SslContextFactory()
-    contextFactory.setKeyStorePath(keystorePath)
-    contextFactory.setKeyStorePassword(keystorePassword)
-
-    val sslConnector = new SslSelectChannelConnector(contextFactory)
-    configureConnectorAddress(sslConnector, conf.httpsAddress, conf.httpsPort)
-
-    sslConnector
-  }
-
-  private[this] def configureConnectorAddress(connector: Connector, addressOpt: ScallopOption[String], portOpt: ScallopOption[Int]): Unit = {
-    addressOpt.foreach { address: String =>
-      connector.setHost(address)
-    }
-
+  private[this] def configureConnectorAddress(connector: ServerConnector, addressOpt: ScallopOption[String], portOpt: ScallopOption[Int]): Unit = {
+    connector.setIdleTimeout(30000)
+    addressOpt.foreach(connector.setHost)
     portOpt.get match {
       case Some(port) =>
         connector.setPort(port)
@@ -126,7 +130,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
                                logHandler: RequestLogHandler,
                                resourceHandler: ResourceHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
-    handlers.setHandlers(Array(resourceHandler, instrumentedHandler, logHandler))
+    handlers.setHandlers(Array(instrumentedHandler, resourceHandler, logHandler))
     handlers
   }
 
@@ -146,7 +150,6 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     resourceCacheControlHeader foreach handler.setCacheControl
     handler.setWelcomeFiles(welcomeFiles)
     handler.setResourceBase(conf.assetsUrl().toExternalForm)
-    handler.setAliases(true) // Enables use of relative paths
     handler
   }
 

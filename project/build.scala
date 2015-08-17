@@ -1,13 +1,12 @@
 import com.amazonaws.auth.InstanceProfileCredentialsProvider
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import ohnosequences.sbt.SbtS3Resolver
-import sbt._
-import Keys._
-import sbtrelease.ReleasePlugin._
 import com.typesafe.sbt.SbtScalariform._
-import ohnosequences.sbt.SbtS3Resolver.S3Resolver
-import ohnosequences.sbt.SbtS3Resolver.{ s3, s3resolver }
+import ohnosequences.sbt.SbtS3Resolver
+import ohnosequences.sbt.SbtS3Resolver.{ S3Resolver, s3, s3resolver }
 import org.scalastyle.sbt.ScalastylePlugin.{ Settings => styleSettings }
+import sbt.Keys._
+import sbt._
+import sbtrelease.ReleasePlugin._
+
 import scalariform.formatter.preferences._
 
 object ChaosBuild extends Build {
@@ -15,10 +14,10 @@ object ChaosBuild extends Build {
     id = "chaos",
     base = file("."),
     settings = baseSettings ++
-               releaseSettings ++
-               publishSettings ++
-               formatSettings ++
-               styleSettings ++
+      releaseSettings ++
+      publishSettings ++
+      formatSettings ++
+      styleSettings ++
       Seq(
         libraryDependencies ++= Dependencies.root,
         parallelExecution in Test := false,
@@ -36,9 +35,9 @@ object ChaosBuild extends Build {
 
   lazy val baseSettings = Defaults.defaultSettings ++ Seq (
     organization := "mesosphere",
-    crossScalaVersions := Seq("2.10.4", "2.11.6"),
-    scalacOptions in Compile ++= Seq("-encoding", "UTF-8", "-target:jvm-1.6", "-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
-    javacOptions in Compile ++= Seq("-encoding", "UTF-8", "-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-Xlint:deprecation"),
+    crossScalaVersions := Seq("2.10.5", "2.11.7"),
+    scalacOptions in Compile ++= Seq("-encoding", "UTF-8", "-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
+    javacOptions in Compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
     resolvers ++= Seq(
       "Mesosphere Public Repo"    at "http://downloads.mesosphere.io/maven",
       "Twitter Maven2 Repository" at "http://maven.twttr.com/",
@@ -72,7 +71,7 @@ object ChaosBuild extends Build {
       .setPreference(SpaceInsideParentheses, false)
       .setPreference(SpacesWithinPatternBinders, true)
       .setPreference(FormatXml, true)
-    )
+  )
 }
 
 object Dependencies {
@@ -120,16 +119,19 @@ object Dependency {
     val Guice = "3.0"
     val Scallop = "0.9.5"
     val Jersey = "1.18.1"
-    val Metrics = "3.0.2"
-    val Jetty = "8.1.15.v20140411"
-    val Jackson = "2.4.1"
-    val Hibernate = "5.1.2.Final"
-    val Mustache = "0.8.12"
-    val Slf4j = "1.7.7"
+    val Metrics = "3.1.2"
+    val Jetty = "9.3.2.v20150730"
+    val Jackson = "2.4.5"
+    val Hibernate = "5.2.1.Final"
+    val Mustache = "0.9.0"
+    val Slf4j = "1.7.12"
+    val LiftMarkdown = "2.6.2"
+    val Log4J = "1.2.17"
+    val Glassfish = "2.2.6"
 
     // test deps versions
-    val JUnit = "4.11"
-    val Mockito = "1.9.5"
+    val JUnit = "4.12"
+    val Mockito = "1.10.19"
   }
 
   val guava = "com.google.guava" % "guava" % V.Guava
@@ -145,19 +147,19 @@ object Dependency {
   val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % V.Jackson
   val jacksonJaxrs = "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % V.Jackson
   val hibernate = "org.hibernate" % "hibernate-validator" % V.Hibernate
-  val glassfish = "org.glassfish.web" % "javax.el" % "2.2.5"
+  val glassfish = "org.glassfish.web" % "javax.el" % V.Glassfish
 
-  val metricsJersey = "com.codahale.metrics" % "metrics-jersey" % V.Metrics
-  val metricsJvm = "com.codahale.metrics" % "metrics-jvm" % V.Metrics
-  val metricsJetty = "com.codahale.metrics" % "metrics-jetty8" % V.Metrics
-  val metricsServlets = "com.codahale.metrics" % "metrics-servlets" % V.Metrics
+  val metricsJersey = "io.dropwizard.metrics" % "metrics-jersey" % V.Metrics
+  val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % V.Metrics
+  val metricsJetty = "io.dropwizard.metrics" % "metrics-jetty9" % V.Metrics
+  val metricsServlets = "io.dropwizard.metrics" % "metrics-servlets" % V.Metrics
 
   val scallop = "org.rogach" %% "scallop" % V.Scallop
   val mustache = "com.github.spullara.mustache.java" % "compiler" % V.Mustache
   val slf4jLog4j = "org.slf4j" % "slf4j-log4j12" % V.Slf4j
   val slf4jJul = "org.slf4j" % "jul-to-slf4j" % V.Slf4j
-  val log4j = "log4j" % "log4j" % "1.2.17"
-  val liftMD = "net.liftweb" %% "lift-markdown" % "2.6-M4"
+  val log4j = "log4j" % "log4j" % V.Log4J
+  val liftMD = "net.liftweb" %% "lift-markdown" % V.LiftMarkdown
 
   object Test {
     val junit = "junit" % "junit" % V.JUnit
