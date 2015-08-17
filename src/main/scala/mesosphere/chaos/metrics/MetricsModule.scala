@@ -3,7 +3,7 @@ package mesosphere.chaos.metrics
 import com.google.inject.{ Singleton, Provides, AbstractModule }
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchAdapter
-import com.codahale.metrics.jetty8.InstrumentedHandler
+import com.codahale.metrics.jetty9.InstrumentedHandler
 import org.eclipse.jetty.servlet.ServletContextHandler
 
 class MetricsModule extends AbstractModule {
@@ -20,7 +20,9 @@ class MetricsModule extends AbstractModule {
   @Singleton
   @Provides
   def provideInstrumentedHandler(servletHandler: ServletContextHandler, registry: MetricRegistry) = {
-    new InstrumentedHandler(registry, servletHandler)
+    val handler = new InstrumentedHandler(registry)
+    handler.setHandler(servletHandler)
+    handler
   }
 
 }
