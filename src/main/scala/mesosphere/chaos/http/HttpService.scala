@@ -3,7 +3,8 @@ package mesosphere.chaos.http
 import com.google.common.util.concurrent.AbstractIdleService
 import com.google.inject.Inject
 import org.eclipse.jetty.server.Server
-import org.apache.log4j.Logger
+import org.slf4j.LoggerFactory
+
 import scala.util.Try
 
 /**
@@ -11,7 +12,7 @@ import scala.util.Try
   */
 class HttpService @Inject() (val server: Server) extends AbstractIdleService {
 
-  private[this] val log = Logger.getLogger(getClass.getName)
+  private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
   def startUp() {
     log.debug("Starting up HttpServer.")
@@ -20,7 +21,7 @@ class HttpService @Inject() (val server: Server) extends AbstractIdleService {
     }
     catch {
       case e: Exception =>
-        log.fatal("Failed to start HTTP service", e)
+        log.error("Failed to start HTTP service", e)
         Try(server.stop())
         throw e
     }

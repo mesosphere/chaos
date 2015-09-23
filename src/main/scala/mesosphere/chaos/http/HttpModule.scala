@@ -7,7 +7,6 @@ import javax.servlet.DispatcherType
 import com.codahale.metrics.jetty9.InstrumentedHandler
 import com.google.inject._
 import com.google.inject.servlet.GuiceFilter
-import org.apache.log4j.Logger
 import org.eclipse.jetty.http.HttpVersion
 import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
@@ -17,12 +16,13 @@ import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.security.{ Constraint, Password }
 import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.rogach.scallop.ScallopOption
+import org.slf4j.LoggerFactory
 
 class HttpModule(conf: HttpConf) extends AbstractModule {
 
   // TODO make configurable
   val welcomeFiles = Array("index.html")
-  private[this] val log = Logger.getLogger(getClass.getName)
+  private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
   protected val resourceCacheControlHeader: Option[String] = Some("max-age=0, must-revalidate")
 
