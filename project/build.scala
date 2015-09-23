@@ -102,10 +102,12 @@ object Dependencies {
 
     scallop % "compile",
     mustache % "compile",
-    slf4jLog4j % "compile",
-    slf4jJul % "compile",
-    log4j % "compile",
     liftMD % "compile",
+
+    logback % "compile",
+    julToSlf4j % "compile",
+    jclOverSlf4j % "compile",
+    log4jOverSlf4j % "compile",
 
     // test
     Test.junit % "test",
@@ -125,9 +127,9 @@ object Dependency {
     val Jackson = "2.4.5"
     val Hibernate = "5.2.1.Final"
     val Mustache = "0.9.0"
+    val Logback = "1.1.3"
     val Slf4j = "1.7.12"
     val LiftMarkdown = "2.6.2"
-    val Log4J = "1.2.17"
     val Glassfish = "2.2.6"
 
     // test deps versions
@@ -157,10 +159,12 @@ object Dependency {
 
   val scallop = "org.rogach" %% "scallop" % V.Scallop
   val mustache = "com.github.spullara.mustache.java" % "compiler" % V.Mustache
-  val slf4jLog4j = "org.slf4j" % "slf4j-log4j12" % V.Slf4j
-  val slf4jJul = "org.slf4j" % "jul-to-slf4j" % V.Slf4j
-  val log4j = "log4j" % "log4j" % V.Log4J
   val liftMD = "net.liftweb" %% "lift-markdown" % V.LiftMarkdown
+
+  val logback = "ch.qos.logback" % "logback-classic" % V.Logback
+  val log4jOverSlf4j = "org.slf4j" % "log4j-over-slf4j" % V.Slf4j
+  val julToSlf4j = "org.slf4j" % "jul-to-slf4j" % V.Slf4j
+  val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % V.Slf4j
 
   object Test {
     val junit = "junit" % "junit" % V.JUnit
