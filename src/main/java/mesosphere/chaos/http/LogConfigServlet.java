@@ -16,6 +16,7 @@
 
 package mesosphere.chaos.http;
 
+import ch.qos.logback.classic.LoggerContext;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -25,12 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.Level;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -42,7 +42,6 @@ import org.apache.log4j.Logger;
 public class LogConfigServlet extends MustacheServlet {
   private static final List<String> LOG_LEVELS = Lists.newArrayList(
       Level.OFF.toString(),
-      Level.FATAL.toString(),
       Level.ERROR.toString(),
       Level.WARN.toString(),
       Level.INFO.toString(),
@@ -78,7 +77,7 @@ public class LogConfigServlet extends MustacheServlet {
       String loggerName = req.getParameter("logger");
       String loggerLevel = req.getParameter("level");
       if (loggerName != null && loggerLevel != null) {
-        Logger logger = Logger.getLogger(loggerName);
+        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerName);
         Level newLevel = loggerLevel.equals("INHERIT") ? null : Level.toLevel(loggerLevel);
         logger.setLevel(newLevel);
         if (newLevel != null) {
@@ -90,10 +89,9 @@ public class LogConfigServlet extends MustacheServlet {
     }
 
     List<LoggerConfig> loggerConfigs = Lists.newArrayList();
-    Enumeration loggersEnum = LogManager.getCurrentLoggers();
+    List<Logger> loggers = ((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList();
 
-    while (loggersEnum.hasMoreElements()) {
-      Logger logger = (Logger) loggersEnum.nextElement();
+    for (Logger logger : loggers) {
       String level = (logger.getLevel() == null) ? null : logger.getLevel().toString();
       loggerConfigs.add(new LoggerConfig(logger.getName(), level));
     }
