@@ -3,6 +3,7 @@ import com.typesafe.sbt.SbtScalariform._
 import ohnosequences.sbt.SbtS3Resolver
 import ohnosequences.sbt.SbtS3Resolver.{ S3Resolver, s3, s3resolver }
 import org.scalastyle.sbt.ScalastylePlugin.{ Settings => styleSettings }
+import spray.revolver.RevolverPlugin.Revolver.{settings => revolverSettings}
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin._
@@ -14,6 +15,7 @@ object ChaosBuild extends Build {
     id = "chaos",
     base = file("."),
     settings = baseSettings ++
+      revolverSettings ++
       releaseSettings ++
       publishSettings ++
       formatSettings ++

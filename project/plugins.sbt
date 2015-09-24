@@ -8,6 +8,8 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.5.0")
 
+addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
+
 // publishing
 
 resolvers += "Era7 maven releases" at "http://releases.era7.com.s3.amazonaws.com"
