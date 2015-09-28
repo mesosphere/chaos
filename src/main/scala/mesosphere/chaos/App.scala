@@ -1,10 +1,9 @@
 package mesosphere.chaos
 
-import com.google.common.util.concurrent.ServiceManager
-import com.google.inject.{ Module, Guice }
+import com.google.common.util.concurrent.{ Service, ServiceManager }
+import com.google.inject.{ Guice, Module }
 import org.rogach.scallop.ScallopConf
-import com.google.common.util.concurrent.Service
-import org.apache.log4j.Logger
+import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 trait App extends scala.App {
@@ -15,7 +14,7 @@ trait App extends scala.App {
   SLF4JBridgeHandler.install()
 
   lazy val injector = Guice.createInjector(modules().asJava)
-  private val log = Logger.getLogger(getClass.getName)
+  private val log = LoggerFactory.getLogger(getClass.getName)
   private var serviceManager: Option[ServiceManager] = None
 
   def conf(): ScallopConf with AppConfiguration
@@ -42,7 +41,7 @@ trait App extends scala.App {
     }
     catch {
       case e: Exception =>
-        log.fatal(s"Failed to start all services. Services by state: ${serviceManager.servicesByState()}", e)
+        log.error(s"Failed to start all services. Services by state: ${serviceManager.servicesByState()}", e)
         shutdownAndWait()
         System.exit(1)
     }

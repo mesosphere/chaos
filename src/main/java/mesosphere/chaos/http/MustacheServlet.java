@@ -5,12 +5,14 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheException;
 import com.github.mustachejava.MustacheFactory;
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.apache.log4j.Logger;
 
 /**
  * A base class for servlets that render using the Mustache template templating system.  Subclasses
@@ -22,7 +24,7 @@ import org.apache.log4j.Logger;
 public abstract class MustacheServlet extends HttpServlet {
   private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
 
-  private static final Logger LOG = Logger.getLogger(MustacheServlet.class.getName());
+  private static final Logger LOG = LoggerFactory.getLogger(MustacheServlet.class.getName());
 
   private final MustacheFactory mf;
   private final String templateName;
