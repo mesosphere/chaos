@@ -9,6 +9,8 @@ class ChaosRequestLog extends NCSARequestLog {
 
   private[this] val log = Logger.getLogger(getClass.getName)
 
+  setLogLatency(true)
+
   override def write(requestEntry: String) {
     // Remove line separator because jul will add it
     log.info(requestEntry.substring(0, requestEntry.length - lineSepLength))
