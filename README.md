@@ -35,7 +35,7 @@ There are great JVM libraries for every part of a REST stack. Chaos just glues t
 
 ### Requirements
 
-* JDK 1.6+
+* JDK 1.8+
 * SBT 0.13.x+
 
 ### Example App
@@ -93,7 +93,7 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
 To add Chaos to an SBT project, add this to your `build.sbt`:
 
     resolvers += "Mesosphere Public Repo" at "http://downloads.mesosphere.io/maven"
-    
+
     libraryDependencies ++= Seq(
       "mesosphere" % "chaos" % "0.5.2",
       "com.sun.jersey" % "jersey-bundle" % "1.17.1"
