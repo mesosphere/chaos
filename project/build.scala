@@ -119,6 +119,12 @@ object Dependencies {
     jclOverSlf4j % "compile",
     log4jOverSlf4j % "compile",
 
+    // The macros subproject contains only code which is used at compile-time, hence the provided scope.
+    macWireMacros % "provided",
+    // The util subproject contains tagging, Wired and the @Module annotation; if you don't use these features, you don't need to include this dependency.
+    // macWireUtil % "compile",
+    macWireProxy % "compile",
+
     // test
     Test.junit % "test",
     Test.mockito % "test"
@@ -141,6 +147,7 @@ object Dependency {
     val Slf4j = "1.7.12"
     val LiftMarkdown = "2.6.2"
     val Glassfish = "2.2.6"
+    val MacWire = "2.2.2"
 
     // test deps versions
     val JUnit = "4.12"
@@ -175,6 +182,10 @@ object Dependency {
   val log4jOverSlf4j = "org.slf4j" % "log4j-over-slf4j" % V.Slf4j
   val julToSlf4j = "org.slf4j" % "jul-to-slf4j" % V.Slf4j
   val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % V.Slf4j
+
+  val macWireMacros = "com.softwaremill.macwire" %% "macros" % V.MacWire
+  val macWireUtil = "com.softwaremill.macwire" %% "util" % V.MacWire
+  val macWireProxy = "com.softwaremill.macwire" %% "proxy" % V.MacWire
 
   object Test {
     val junit = "junit" % "junit" % V.JUnit
