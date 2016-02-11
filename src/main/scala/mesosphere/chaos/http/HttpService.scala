@@ -1,34 +1,16 @@
 package mesosphere.chaos.http
 
+import javax.servlet.{Filter, Servlet}
+
 import com.google.common.util.concurrent.AbstractIdleService
-import com.google.inject.Inject
-import org.eclipse.jetty.server.Server
-import org.slf4j.LoggerFactory
 
-import scala.util.Try
+trait HttpService extends AbstractIdleService {
+  def registerResources(resources: AnyRef*)
+  def getRegisteredResources: Seq[AnyRef]
 
-/**
-  * Wrapper for starting and stopping the HttpServer.
-  */
-class HttpService @Inject() (val server: Server) extends AbstractIdleService {
+  def registerServlet(servlet: Servlet, path: String)
+  def registerFilter(filter: Filter, path: String)
 
-  private[this] val log = LoggerFactory.getLogger(getClass.getName)
-
-  def startUp() {
-    log.debug("Starting up HttpServer.")
-    try {
-      server.start()
-    }
-    catch {
-      case e: Exception =>
-        log.error("Failed to start HTTP service", e)
-        Try(server.stop())
-        throw e
-    }
-  }
-
-  def shutDown() {
-    log.debug("Shutting down HttpServer.")
-    server.stop()
-  }
+  def getRegisteredServlets: Seq[Servlet]
+  def getRegisteredFilter: Seq[Filter]
 }

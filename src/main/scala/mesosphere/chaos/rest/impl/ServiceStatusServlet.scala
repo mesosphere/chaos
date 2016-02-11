@@ -1,8 +1,9 @@
-package mesosphere.chaos.http
+package mesosphere.chaos.rest.impl
 
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse, HttpServlet }
-import javax.inject.Inject
-import mesosphere.chaos.ServiceStatus
+import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
+
+import mesosphere.chaos.rest.ServiceStatus
+
 
 /**
   * An HTTP servlets which allows turning a service off without killing it.
@@ -12,7 +13,7 @@ import mesosphere.chaos.ServiceStatus
   *
   */
 
-class ServiceStatusServlet @Inject() (val status: ServiceStatus)
+class ServiceStatusServlet (val status: ServiceStatus)
     extends HttpServlet {
 
   private final val CONTENT_TYPE = "text/plain"
