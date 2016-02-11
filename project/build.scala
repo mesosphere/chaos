@@ -11,6 +11,14 @@ import sbtrelease.ReleasePlugin._
 import scalariform.formatter.preferences._
 
 object ChaosBuild extends Build {
+  lazy val chaosExamples: Project = Project(
+    id = "chaos-examples",
+    base = file("chaos-examples"),
+    settings = baseSettings ++
+      formatSettings ++
+      publishSettings
+  ).dependsOn(root % "compile->compile; test->test")
+
   lazy val root = Project(
     id = "chaos",
     base = file("."),
