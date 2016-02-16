@@ -83,15 +83,12 @@ object Dependencies {
   val root = Seq(
     // runtime
     guava % "compile",
-    guice % "compile",
-    guiceServlet % "compile",
     jettyServer % "compile",
     jettyServlet % "compile",
     jettySecurity % "compile",
     jerseyCore % "compile",
     jerseyServer % "compile",
     jerseyServlet % "compile",
-    jerseyGuice % "compile",
     jacksonScala % "compile",
     jacksonJaxrs % "compile",
     hibernate % "compile",
@@ -121,7 +118,6 @@ object Dependency {
   object V {
     // runtime deps versions
     val Guava = "17.0"
-    val Guice = "3.0"
     val Scallop = "0.9.5"
     val Jersey = "1.18.1"
     val Metrics = "3.1.2"
@@ -140,15 +136,12 @@ object Dependency {
   }
 
   val guava = "com.google.guava" % "guava" % V.Guava
-  val guice = "com.google.inject" % "guice" % V.Guice
-  val guiceServlet = "com.google.inject.extensions" % "guice-servlet" % V.Guice
   val jettyServer = "org.eclipse.jetty" % "jetty-server" % V.Jetty
   val jettyServlet = "org.eclipse.jetty" % "jetty-servlet" % V.Jetty
   val jettySecurity = "org.eclipse.jetty" % "jetty-security" % V.Jetty
   val jerseyCore = "com.sun.jersey" % "jersey-core" % V.Jersey
   val jerseyServer = "com.sun.jersey" % "jersey-server" % V.Jersey
   val jerseyServlet = "com.sun.jersey" % "jersey-servlet" % V.Jersey
-  val jerseyGuice = "com.sun.jersey.contribs" % "jersey-guice" % V.Jersey
   val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % V.Jackson
   val jacksonJaxrs = "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % V.Jackson
   val hibernate = "org.hibernate" % "hibernate-validator" % V.Hibernate

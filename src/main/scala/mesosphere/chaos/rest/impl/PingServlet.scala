@@ -1,6 +1,6 @@
-package mesosphere.chaos.http
+package mesosphere.chaos.rest.impl
 
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse, HttpServlet }
+import javax.servlet.http.{ HttpServlet, HttpServletRequest, HttpServletResponse }
 
 /**
   * An HTTP servlets which outputs a {@code text/plain} {@code "pong"} response.

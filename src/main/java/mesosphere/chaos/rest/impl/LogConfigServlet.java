@@ -14,12 +14,14 @@
 // limitations under the License.
 // =================================================================================================
 
-package mesosphere.chaos.http;
+package mesosphere.chaos.rest.impl;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.Level;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -51,7 +49,6 @@ public class LogConfigServlet extends MustacheServlet {
       "INHERIT" // Display value for a null level, the logger inherits from its ancestor.
   );
 
-  @Inject
   public LogConfigServlet() {
     super("logconfig.mustache");
   }
@@ -77,7 +74,7 @@ public class LogConfigServlet extends MustacheServlet {
       String loggerName = req.getParameter("logger");
       String loggerLevel = req.getParameter("level");
       if (loggerName != null && loggerLevel != null) {
-        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerName);
+        Logger logger = (Logger) LoggerFactory.getLogger(loggerName);
         Level newLevel = loggerLevel.equals("INHERIT") ? null : Level.toLevel(loggerLevel);
         logger.setLevel(newLevel);
         if (newLevel != null) {

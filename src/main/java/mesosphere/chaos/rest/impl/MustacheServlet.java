@@ -1,4 +1,4 @@
-package mesosphere.chaos.http;
+package mesosphere.chaos.rest.impl;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
