@@ -1,10 +1,10 @@
-## GET /foo/bar
+## GET /persons/system
 
 Prints system properties.
 
 ### Example
 
-    $ http localhost:8080/foo/bar
+    $ http localhost:8080/persons/system
     HTTP/1.1 200 OK
     Content-Type: application/json
     Server: Jetty(8.1.11.v20130520)
