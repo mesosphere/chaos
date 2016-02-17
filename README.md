@@ -24,11 +24,9 @@ We wanted a framework that
 There are great JVM libraries for every part of a REST stack. Chaos just glues these together.
 
 * [Jersey](https://jersey.java.net/) for REST via annotations
-* [Guice](https://github.com/google/guice) for dependency injection
 * [Guava](https://code.google.com/p/guava-libraries/) for lifecycle management and various utilities
 * [Jetty](http://www.eclipse.org/jetty/) as the web server and servlet container
 * [Jackson](http://wiki.fasterxml.com/JacksonHome) for JSON support
-* [Hibernate Validator](http://hibernate.org/subprojects/validator.html) for validating API requests
 * [Coda Hale's Metrics](https://github.com/codahale/metrics) for JVM and application metrics
 
 ## Getting Started
@@ -40,15 +38,15 @@ There are great JVM libraries for every part of a REST stack. Chaos just glues t
 
 ### Example App
 
-There is an example app in [src/main/scala/mesosphere/chaos/example]
-(https://github.com/mesosphere/chaos/blob/master/src/main/scala/mesosphere/chaos/example/Main.scala). To run the example:
+There is an example app in [src/main/scala/mesosphere/chaos-examples/]
+(https://github.com/mesosphere/chaos/blob/master/src/main/scala/mesosphere/chaos-examples/Main.scala). To run the example:
 
     sbt run
 
 Make requests to the example endpoints with [HTTPie](https://github.com/jkbrzt/httpie):
 
-    http localhost:8080/foo
-    http localhost:8080/foo name=Bunny age=42
+    http localhost:8080/persons
+    http localhost:8080/persons name=Bunny age=42
 
 ### Built in Endpoints
 
