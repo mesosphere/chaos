@@ -11,6 +11,15 @@ import sbtrelease.ReleasePlugin._
 import scalariform.formatter.preferences._
 
 object ChaosBuild extends Build {
+  lazy val chaosExamples: Project = Project(
+    id = "chaos-examples",
+    base = file("chaos-examples"),
+    settings = baseSettings ++
+      formatSettings ++
+      publishSettings ++
+      revolverSettings
+  ).dependsOn(root % "compile->compile; test->test")
+
   lazy val root = Project(
     id = "chaos",
     base = file("."),
@@ -121,7 +130,7 @@ object Dependency {
     val Scallop = "0.9.5"
     val Jersey = "1.18.1"
     val Metrics = "3.1.2"
-    val Jetty = "9.3.2.v20150730"
+    val Jetty = "9.3.6.v20151106"
     val Jackson = "2.6.1"
     val Hibernate = "5.2.1.Final"
     val Mustache = "0.9.0"

@@ -6,7 +6,7 @@ A lightweight framework for writing REST services in Scala.
 
 ## Why yet another framework?
 
-At [Mesosphere](http://mesosphere.com) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
+At [Mesosphere](https://mesosphere.com/) we're building REST services in Scala, and we wanted a solid foundation. We had experience with [Dropwizard](https://github.com/dropwizard/dropwizard) and [Twitter Commons](https://github.com/twitter/commons), which are both great Java frameworks, but are a bit hard to use from Scala.
 We also experimented with [Play!](https://github.com/playframework/playframework), but it does many things besides REST, which adds unnecessary baggage.
 
 ### Design Goals
@@ -24,31 +24,29 @@ We wanted a framework that
 There are great JVM libraries for every part of a REST stack. Chaos just glues these together.
 
 * [Jersey](https://jersey.java.net/) for REST via annotations
-* [Guice](https://code.google.com/p/google-guice/) for dependency injection
 * [Guava](https://code.google.com/p/guava-libraries/) for lifecycle management and various utilities
 * [Jetty](http://www.eclipse.org/jetty/) as the web server and servlet container
 * [Jackson](http://wiki.fasterxml.com/JacksonHome) for JSON support
-* [Hibernate Validator](http://www.hibernate.org/subprojects/validator.html) for validating API requests
 * [Coda Hale's Metrics](https://github.com/codahale/metrics) for JVM and application metrics
 
 ## Getting Started
 
 ### Requirements
 
-* JDK 1.6+
+* JDK 1.8+
 * SBT 0.13.x+
 
 ### Example App
 
-There is an example app in [src/main/scala/mesosphere/chaos/example]
-(https://github.com/mesosphere/chaos/blob/master/src/main/scala/mesosphere/chaos/example/Main.scala). To run the example:
+There is an example app in [src/main/scala/mesosphere/chaos-examples/]
+(https://github.com/mesosphere/chaos/blob/master/src/main/scala/mesosphere/chaos-examples/Main.scala). To run the example:
 
     sbt run
 
-Make requests to the example endpoints with [HTTPie](https://github.com/jkbr/httpie):
+Make requests to the example endpoints with [HTTPie](https://github.com/jkbrzt/httpie):
 
-    http localhost:8080/foo
-    http localhost:8080/foo name=Bunny age=42
+    http localhost:8080/persons
+    http localhost:8080/persons name=Bunny age=42
 
 ### Built in Endpoints
 
@@ -93,7 +91,7 @@ To add Chaos to a Maven project, add this to your `pom.xml`:
 To add Chaos to an SBT project, add this to your `build.sbt`:
 
     resolvers += "Mesosphere Public Repo" at "http://downloads.mesosphere.io/maven"
-    
+
     libraryDependencies ++= Seq(
       "mesosphere" % "chaos" % "0.5.2",
       "com.sun.jersey" % "jersey-bundle" % "1.17.1"
@@ -103,7 +101,7 @@ To add Chaos to an SBT project, add this to your `build.sbt`:
 ## Getting Help
 
 If you have questions, please post on the [Chaos Users Group](https://groups.google.com/forum/?hl=en#!forum/chaos-users) email list.
-The team at [Mesosphere](http://mesosphere.com) is also happy to answer any questions.
+The team at [Mesosphere](https://mesosphere.com/) is also happy to answer any questions.
 
 ## Authors
 
@@ -113,4 +111,4 @@ The team at [Mesosphere](http://mesosphere.com) is also happy to answer any ques
 ## Current Users
 
 * [Marathon](https://github.com/mesosphere/marathon), an Apache Mesos framework for long-running services.
-* [Chronos](https://github.com/airbnb/chronos), a fault tolerant job scheduler that handles dependencies and ISO8601 based schedules.
+* [Chronos](https://github.com/mesos/chronos), a fault tolerant job scheduler that handles dependencies and ISO8601 based schedules.
