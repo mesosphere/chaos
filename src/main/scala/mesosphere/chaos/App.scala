@@ -1,7 +1,6 @@
 package mesosphere.chaos
 
 import com.google.common.util.concurrent.{ Service, ServiceManager }
-import com.google.inject.{ Guice, Module }
 import org.rogach.scallop.ScallopConf
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
@@ -13,22 +12,13 @@ trait App extends scala.App {
   SLF4JBridgeHandler.removeHandlersForRootLogger()
   SLF4JBridgeHandler.install()
 
-  lazy val injector = Guice.createInjector(modules().asJava)
   private val log = LoggerFactory.getLogger(getClass.getName)
   private var serviceManager: Option[ServiceManager] = None
 
   def conf(): ScallopConf with AppConfiguration
 
-  def modules(): Iterable[_ <: Module]
+  def run(services: Service*) {
 
-  def initConf() {
-    conf().afterInit()
-  }
-
-  def run(classes: Class[_ <: Service]*) {
-    initConf()
-
-    val services = classes.map(injector.getInstance(_))
     val serviceManager = new ServiceManager(services.asJava)
     this.serviceManager = Some(serviceManager)
 

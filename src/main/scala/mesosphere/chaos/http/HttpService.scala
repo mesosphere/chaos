@@ -1,34 +1,53 @@
 package mesosphere.chaos.http
 
-import com.google.common.util.concurrent.AbstractIdleService
-import com.google.inject.Inject
-import org.eclipse.jetty.server.Server
-import org.slf4j.LoggerFactory
+import javax.servlet.{ Filter, Servlet }
 
-import scala.util.Try
+import com.google.common.util.concurrent.AbstractIdleService
 
 /**
-  * Wrapper for starting and stopping the HttpServer.
+  * This Guava interface supposed to provide methods for registering resources, servlets or filters to a http server.
+  * One should add all desired resources prior executing the service. Then an instance of this trait might be started
+  * by passing it to a Guava ServiceManager instance and applying startAsync() function. This functionality is
+  * implemented in [[mesosphere.chaos.App.run(services: Service*)]]. You could derive from that class and pass a
+  * [[mesosphere.chaos.http.HttpService]] to it's run function.
   */
-class HttpService @Inject() (val server: Server) extends AbstractIdleService {
+trait HttpService extends AbstractIdleService {
+  /**
+    * You may register one or several resources e.g. instances of Jersey JAX-RS annotated REST classes.
+    * @param resources instances you would like to add to your server.
+    *                  That might be e.g. an instance of a JAX-RS annotated Jersey class.
+    */
+  def registerResources(resources: AnyRef*)
 
-  private[this] val log = LoggerFactory.getLogger(getClass.getName)
+  /**
+    * Returns a lilst of resources that been registered on the server.
+    * @return
+    */
+  def getRegisteredResources: Seq[AnyRef]
 
-  def startUp() {
-    log.debug("Starting up HttpServer.")
-    try {
-      server.start()
-    }
-    catch {
-      case e: Exception =>
-        log.error("Failed to start HTTP service", e)
-        Try(server.stop())
-        throw e
-    }
-  }
+  /**
+    * Registers a servlet.
+    * @param servlet servlet you would like to register.
+    * @param path path it should be binded to.
+    */
+  def registerServlet(servlet: Servlet, path: String)
 
-  def shutDown() {
-    log.debug("Shutting down HttpServer.")
-    server.stop()
-  }
+  /**
+    * Returns a list of registered servlets.
+    * @return registered servlets.
+    */
+  def getRegisteredServlets: Seq[Servlet]
+
+  /**
+    * Registers a filter.
+    * @param filter filter you would like to register on your server.
+    * @param path path it should be binded to.
+    */
+  def registerFilter(filter: Filter, path: String)
+
+  /**
+    * Returns registered filters.
+    * @return registered filters.
+    */
+  def getRegisteredFilter: Seq[Filter]
 }

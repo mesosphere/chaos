@@ -1,23 +1,21 @@
 package mesosphere.chaos.example
 
+import mesosphere.chaos.http.HttpConf
+import mesosphere.chaos.{AppConfiguration, ChaosModule, App}
 import org.rogach.scallop.ScallopConf
-import mesosphere.chaos.http.{ HttpService, HttpConf, HttpModule }
-import mesosphere.chaos.metrics.MetricsModule
-import mesosphere.chaos.{ App, AppConfiguration }
 
+// TODO: put the whole example somewhere else
 object Main extends App {
-
-  //Declare all Guice Modules
-  def modules() = {
-    Seq(
-      new HttpModule(conf),
-      new MetricsModule,
-      new ExampleRestModule)
-  }
-
   //The fact that this is lazy, allows us to pass it to a Module
   //constructor.
   lazy val conf = new ScallopConf(args) with HttpConf with AppConfiguration
+  conf.afterInit()
 
-  run(classOf[HttpService])
+  // Creating chaos module, which contains ScallopConf, MetricsModule and HttpModule.
+  val chaosModule = new ChaosModule(conf)
+  // Derives from RestModule adding some example resources to it.
+  val exampleModule = new ExampleRestModule(chaosModule)
+
+  run(chaosModule.httpModule.httpService)
 }
+

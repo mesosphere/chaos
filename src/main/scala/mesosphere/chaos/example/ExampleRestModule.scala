@@ -1,14 +1,8 @@
 package mesosphere.chaos.example
 
-import com.google.inject.Scopes
-import mesosphere.chaos.http.RestModule
+import mesosphere.chaos.ChaosModule
+import mesosphere.chaos.rest.RestModule
 
-class ExampleRestModule extends RestModule {
-
-  protected override def configureServlets() {
-    super.configureServlets()
-
-    bind(classOf[ExampleResource]).in(Scopes.SINGLETON)
-  }
-
+class ExampleRestModule(chaosModule: ChaosModule) extends RestModule(chaosModule) {
+  httpService.registerResources(new ExampleResource)
 }
