@@ -22,7 +22,7 @@ class HttpServiceImpl(httpServer: HttpServer) extends HttpService {
   def startUp() {
     log.debug("Starting up HttpServer.")
     try {
-      if(!initialized) addServletWithRegisteredResources()
+      if (!initialized) addServletWithRegisteredResources()
       initialized = true
       httpServer.start()
     }

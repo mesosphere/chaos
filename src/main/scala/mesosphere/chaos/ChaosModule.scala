@@ -1,6 +1,6 @@
 package mesosphere.chaos
 
-import mesosphere.chaos.http.{HttpConf, HttpModule}
+import mesosphere.chaos.http.{ HttpConf, HttpModule }
 import mesosphere.chaos.metrics.MetricsModule
 
 /**

@@ -1,4 +1,4 @@
-## POST /foo
+## POST /persons
 
 Post a person object as JSON. It will be written to the server's STDOUT.
 
