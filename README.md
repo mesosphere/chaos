@@ -27,7 +27,7 @@ There are great JVM libraries for every part of a REST stack. Chaos just glues t
 * [Guava](https://code.google.com/p/guava-libraries/) for lifecycle management and various utilities
 * [Jetty](http://www.eclipse.org/jetty/) as the web server and servlet container
 * [Jackson](http://wiki.fasterxml.com/JacksonHome) for JSON support
-* [Coda Hale's Metrics](https://github.com/codahale/metrics) for JVM and application metrics
+* [Coda Hale's Metrics](https://github.com/dropwizard/metrics) for JVM and application metrics
 
 ## Getting Started
 
