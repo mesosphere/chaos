@@ -11,6 +11,7 @@ import org.eclipse.jetty.http.HttpVersion
 import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
+import org.eclipse.jetty.server.handler.gzip.GzipHandler
 import org.eclipse.jetty.server.handler.{ HandlerCollection, RequestLogHandler, ResourceHandler }
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.security.{ Constraint, Password }
@@ -71,7 +72,11 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       // everything seems fine
     }
 
-    server.setHandler(handlers)
+    //enable compression if enabled in the header
+    val gzipHandler = new GzipHandler()
+    gzipHandler.setHandler(handlers)
+    server.setHandler(gzipHandler)
+
     server
   }
 
