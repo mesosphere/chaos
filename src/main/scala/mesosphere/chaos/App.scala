@@ -21,13 +21,7 @@ trait App extends scala.App {
 
   def modules(): Iterable[_ <: Module]
 
-  def initConf() {
-    conf().afterInit()
-  }
-
   def run(classes: Class[_ <: Service]*) {
-    initConf()
-
     val services = classes.map(injector.getInstance(_))
     val serviceManager = new ServiceManager(services.asJava)
     this.serviceManager = Some(serviceManager)
