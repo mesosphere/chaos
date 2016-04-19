@@ -72,10 +72,12 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       // everything seems fine
     }
 
-    //enable compression if enabled in the header
-    val gzipHandler = new GzipHandler()
-    gzipHandler.setHandler(handlers)
-    server.setHandler(gzipHandler)
+    if (conf.httpCompression()) {
+      val gzipHandler = new GzipHandler()
+      gzipHandler.addExcludedMimeTypes("text/event-stream") //exclude event stream compression
+      gzipHandler.setHandler(handlers)
+      server.setHandler(gzipHandler)
+    }
 
     server
   }
@@ -132,10 +134,9 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   @Provides
   @Singleton
   def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
-                               logHandler: RequestLogHandler,
-                               resourceHandler: ResourceHandler): HandlerCollection = {
+                               logHandler: RequestLogHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
-    handlers.setHandlers(Array(instrumentedHandler, resourceHandler, logHandler))
+    handlers.setHandlers(Array(instrumentedHandler, logHandler))
     handlers
   }
 
@@ -144,17 +145,6 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   def provideRequestLogHandler(requestLog: RequestLog) = {
     val handler = new RequestLogHandler()
     handler.setRequestLog(requestLog)
-    handler
-  }
-
-  @Provides
-  @Singleton
-  def provideResourceHandler() = {
-    val handler = new ResourceHandler
-    handler.setDirectoriesListed(false)
-    resourceCacheControlHeader foreach handler.setCacheControl
-    handler.setWelcomeFiles(welcomeFiles)
-    handler.setResourceBase(conf.assetsUrl().toExternalForm)
     handler
   }
 
