@@ -8,6 +8,7 @@ import org.eclipse.jetty.http.HttpVersion
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.security.{ ConstraintMapping, ConstraintSecurityHandler, MappedLoginService, LoginService }
 import org.eclipse.jetty.server._
+import org.eclipse.jetty.server.handler.gzip.GzipHandler
 import org.eclipse.jetty.server.handler.{ ResourceHandler, RequestLogHandler, HandlerCollection }
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.util.security.{ Constraint, Password }
@@ -127,7 +128,16 @@ class HttpServer(conf: HttpConf, registry: MetricRegistry) extends ServletServer
       // everything seems fine
     }
 
-    server.setHandler(handlerCollection)
+    if (conf.httpCompression()) {
+      val gzipHandler = new GzipHandler()
+      gzipHandler.addExcludedMimeTypes("text/event-stream") //exclude event stream compression
+      gzipHandler.setHandler(handlerCollection)
+      server.setHandler(gzipHandler)
+    }
+    else {
+      server.setHandler(handlerCollection)
+    }
+
     server
   }
 
@@ -139,7 +149,7 @@ class HttpServer(conf: HttpConf, registry: MetricRegistry) extends ServletServer
 
   private lazy val handlerCollection: HandlerCollection = {
     val handlers = new HandlerCollection()
-    handlers.setHandlers(Array(instrumentedHandler, resourceHandler, requestLogHandler))
+    handlers.setHandlers(Array(instrumentedHandler, requestLogHandler))
     handlers
   }
 
@@ -150,15 +160,6 @@ class HttpServer(conf: HttpConf, registry: MetricRegistry) extends ServletServer
   }
 
   private lazy val requestLog: RequestLog = new ChaosRequestLog
-
-  private lazy val resourceHandler: ResourceHandler = {
-    val handler = new ResourceHandler
-    handler.setDirectoriesListed(false)
-    resourceCacheControlHeader foreach handler.setCacheControl
-    handler.setWelcomeFiles(welcomeFiles)
-    handler.setResourceBase(conf.assetsUrl().toExternalForm)
-    handler
-  }
 
   private lazy val servletContextHandler: ServletContextHandler = {
     def createLoginService(userName: String, password: String): LoginService = {
