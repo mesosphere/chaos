@@ -52,8 +52,7 @@ object ChaosBuild extends Build {
     publishTo := Some(s3resolver.value(
       "Mesosphere Public Repo (S3)",
       s3("downloads.mesosphere.io/maven")
-    )),
-    SbtS3Resolver.s3credentials := new InstanceProfileCredentialsProvider()
+    ))
   )
 
 
