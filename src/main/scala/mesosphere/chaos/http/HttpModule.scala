@@ -77,6 +77,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       gzipHandler.addExcludedMimeTypes("text/event-stream") //exclude event stream compression
       gzipHandler.setHandler(handlers)
       server.setHandler(gzipHandler)
+    } else {
+      server.setHandler(handlers)
     }
 
     server
