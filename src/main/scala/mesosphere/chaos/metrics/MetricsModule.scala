@@ -1,10 +1,10 @@
 package mesosphere.chaos.metrics
 
-import java.lang.management.ManagementFactory
-
-import com.codahale.metrics.MetricRegistry
-import com.codahale.metrics.jvm.{ BufferPoolMetricSet, GarbageCollectorMetricSet, MemoryUsageGaugeSet, ThreadStatesGaugeSet }
+import com.codahale.metrics.jvm._
+import mesosphere.chaos.metrics.impl.{ DefaultBufferPoolMetricSet, DefaultMetricRegistry }
 import org.slf4j.LoggerFactory
+
+import com.softwaremill.macwire._
 
 /**
   * Includes a registry of metric instances. Those contain:
@@ -14,14 +14,13 @@ import org.slf4j.LoggerFactory
   *    GC-specific memory pools.
   *  - a set of gauges for the number of threads in their various states and deadlock detection.
   */
+@Module
 class MetricsModule {
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
-  lazy val registry: MetricRegistry = {
-    val registry = new MetricRegistry
-    registry.register("jvm.gc", new GarbageCollectorMetricSet())
-    registry.register("jvm.buffers", new BufferPoolMetricSet(ManagementFactory.getPlatformMBeanServer))
-    registry.register("jvm.memory", new MemoryUsageGaugeSet())
-    registry.register("jvm.threads", new ThreadStatesGaugeSet())
-    registry
-  }
+
+  lazy val garbageCollector = wire[GarbageCollectorMetricSet]
+  lazy val threadState = wire[ThreadStatesGaugeSet]
+  lazy val memoryUsage = wire[MemoryUsageGaugeSet]
+  lazy val bufferPool = wire[DefaultBufferPoolMetricSet]
+  lazy val registry = wire[DefaultMetricRegistry]
 }
