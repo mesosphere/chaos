@@ -37,8 +37,6 @@ class HttpServer(conf: HttpConf, registry: MetricRegistry) extends ServletServer
 
   override def stop(): Unit = httpServer.stop()
 
-  // TODO make configurable
-  val welcomeFiles = Array("index.html")
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
   protected val resourceCacheControlHeader: Option[String] = Some("max-age=0, must-revalidate")
