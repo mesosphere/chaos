@@ -2,7 +2,7 @@ package mesosphere.chaos.examples.persons.impl
 
 import javax.validation.Valid
 import javax.ws.rs.core.MediaType
-import javax.ws.rs.{GET, POST, Path, Produces}
+import javax.ws.rs.{ GET, POST, Path, Produces }
 
 import com.codahale.metrics.annotation.Timed
 

@@ -127,15 +127,15 @@ object Dependency {
   object V {
     // runtime deps versions
     val Guava = "17.0"
-    val Scallop = "0.9.5"
+    val Scallop = "1.0.0"
     val Jersey = "1.18.1"
     val Metrics = "3.1.2"
     val Jetty = "9.3.6.v20151106"
     val Jackson = "2.6.1"
     val Hibernate = "5.2.1.Final"
     val Mustache = "0.9.0"
-    val Logback = "1.1.3"
-    val Slf4j = "1.7.12"
+    val Logback = "1.1.7"
+    val Slf4j = "1.7.21"
     val LiftMarkdown = "2.6.2"
     val Glassfish = "2.2.6"
 

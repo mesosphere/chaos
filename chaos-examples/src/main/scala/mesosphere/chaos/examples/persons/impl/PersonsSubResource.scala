@@ -1,7 +1,7 @@
 package mesosphere.chaos.examples.persons.impl
 
 import javax.ws.rs.core.MediaType
-import javax.ws.rs.{GET, Produces}
+import javax.ws.rs.{ GET, Produces }
 
 import scala.Array
 
