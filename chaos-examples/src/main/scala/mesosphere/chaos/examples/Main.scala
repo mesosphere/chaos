@@ -14,5 +14,5 @@ object Main extends App {
   // Derives from RestModule adding some example resources to it.
   val exampleModule = new PersonsModule(chaosModule)
 
-  run(chaosModule.httpModule.httpService)
+  run(exampleModule.httpService)
 }

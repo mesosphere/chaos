@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServlet
 import com.codahale.metrics.servlets.MetricsServlet
 import mesosphere.chaos.ChaosModule
 import mesosphere.chaos.rest.impl.{ LogConfigServlet, PingServlet }
+import com.softwaremill.macwire._
 
 /**
   * Registers a couple of default servlets to the Jetty server. Those are:
@@ -13,6 +14,7 @@ import mesosphere.chaos.rest.impl.{ LogConfigServlet, PingServlet }
   *  - logging servlet. Allows dynamic adjustments of http configuration.
   * @param chaosModule module including the metrics and http modules.
   */
+@Module
 class RestModule(chaosModule: ChaosModule) {
   // Override these in a subclass to mount resources at a different path
   val pingUrl = "/ping"
@@ -20,9 +22,10 @@ class RestModule(chaosModule: ChaosModule) {
   val loggingUrl = "/logging"
 
   // Initializing servlets
-  lazy val pingServlet: HttpServlet = new PingServlet
-  lazy val metricsServlet: HttpServlet = new MetricsServlet(chaosModule.metricsModule.registry)
-  lazy val logConfigServlet: HttpServlet = new LogConfigServlet
+  lazy val pingServlet: HttpServlet = wire[PingServlet]
+  lazy val registry = chaosModule.metricsModule.registry
+  lazy val metricsServlet: HttpServlet = new MetricsServlet(registry)
+  lazy val logConfigServlet: HttpServlet = wire[LogConfigServlet]
 
   // Binding servlets
   val httpService = chaosModule.httpModule.httpService
