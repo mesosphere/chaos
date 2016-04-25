@@ -15,7 +15,7 @@ import com.softwaremill.macwire._
   *  - a set of gauges for the number of threads in their various states and deadlock detection.
   */
 @Module
-class MetricsModule {
+trait MetricsModule {
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
   lazy val garbageCollector = wire[GarbageCollectorMetricSet]
