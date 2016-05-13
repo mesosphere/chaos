@@ -125,7 +125,7 @@ object Dependency {
     val Jersey = "1.18.1"
     val Metrics = "3.1.2"
     val Jetty = "9.3.6.v20151106"
-    val Jackson = "2.6.1"
+    val Jackson = "2.7.2"
     val Hibernate = "5.2.1.Final"
     val Mustache = "0.9.0"
     val Logback = "1.1.7"
