@@ -4,7 +4,6 @@ import java.io.File
 import java.util
 import javax.servlet.DispatcherType
 
-import com.codahale.metrics.jetty9.InstrumentedHandler
 import com.google.inject._
 import com.google.inject.servlet.GuiceFilter
 import org.eclipse.jetty.http.HttpVersion
@@ -12,7 +11,7 @@ import org.eclipse.jetty.security._
 import org.eclipse.jetty.security.authentication.BasicAuthenticator
 import org.eclipse.jetty.server._
 import org.eclipse.jetty.server.handler.gzip.GzipHandler
-import org.eclipse.jetty.server.handler.{ HandlerCollection, RequestLogHandler, ResourceHandler }
+import org.eclipse.jetty.server.handler.{ HandlerCollection, RequestLogHandler }
 import org.eclipse.jetty.servlet.{ DefaultServlet, ServletContextHandler }
 import org.eclipse.jetty.util.security.{ Constraint, Password }
 import org.eclipse.jetty.util.ssl.SslContextFactory
@@ -78,7 +77,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       gzipHandler.addExcludedMimeTypes("text/event-stream") //exclude event stream compression
       gzipHandler.setHandler(handlers)
       server.setHandler(gzipHandler)
-    } else {
+    }
+    else {
       server.setHandler(handlers)
     }
 
@@ -116,8 +116,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     }
 
     for {
-      keystorePath <- conf.sslKeystorePath.get
-      keystorePassword <- conf.sslKeystorePassword.get
+      keystorePath <- conf.sslKeystorePath.toOption
+      keystorePassword <- conf.sslKeystorePassword.toOption
       connector = createHTTPSConnector(keystorePath, keystorePassword)
     } yield connector
   }
@@ -125,7 +125,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   private[this] def configureConnectorAddress(connector: ServerConnector, addressOpt: ScallopOption[String], portOpt: ScallopOption[Int]): Unit = {
     connector.setIdleTimeout(30000)
     addressOpt.foreach(connector.setHost)
-    portOpt.get match {
+    portOpt.toOption match {
       case Some(port) =>
         connector.setPort(port)
       case None =>
@@ -136,10 +136,10 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
 
   @Provides
   @Singleton
-  def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
-                               logHandler: RequestLogHandler): HandlerCollection = {
+  def provideHandlerCollection(
+    logHandler: RequestLogHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
-    handlers.setHandlers(Array(instrumentedHandler, logHandler))
+    handlers.setHandlers(Array(logHandler))
     handlers
   }
 
@@ -160,7 +160,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     handler.addFilter(classOf[GuiceFilter], "/*", util.EnumSet.allOf(classOf[DispatcherType]))
     handler.addEventListener(guiceServletConf)
 
-    conf.httpCredentials.get flatMap createSecurityHandler foreach handler.setSecurityHandler
+    conf.httpCredentials.toOption flatMap createSecurityHandler foreach handler.setSecurityHandler
     handler
   }
 
@@ -203,7 +203,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
 
   def createLoginService(userName: String, password: String): LoginService = {
 
-    val loginService = new MappedLoginService() {
+    val loginService = new HashLoginService() {
       override def loadUser(username: String): UserIdentity = null
       override def loadUsers(): Unit = {}
       override def getName: String = conf.httpCredentialsRealm()

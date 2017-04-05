@@ -1,6 +1,4 @@
-import com.amazonaws.auth.InstanceProfileCredentialsProvider
 import com.typesafe.sbt.SbtScalariform._
-import ohnosequences.sbt.SbtS3Resolver
 import ohnosequences.sbt.SbtS3Resolver.{ S3Resolver, s3, s3resolver }
 import org.scalastyle.sbt.ScalastylePlugin.{ Settings => styleSettings }
 import spray.revolver.RevolverPlugin.Revolver.{settings => revolverSettings}
@@ -37,8 +35,8 @@ object ChaosBuild extends Build {
 
   lazy val baseSettings = Defaults.defaultSettings ++ Seq (
     organization := "mesosphere",
-    scalaVersion := "2.11.7",
-    crossScalaVersions := Seq("2.11.7"),
+    scalaVersion := "2.12.1",
+    crossScalaVersions := Seq("2.11.9"),
     scalacOptions in Compile ++= Seq("-encoding", "UTF-8", "-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
     javacOptions in Compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
     resolvers ++= Seq(
@@ -91,19 +89,8 @@ object Dependencies {
     jerseyServer % "compile",
     jerseyServlet % "compile",
     jerseyGuice % "compile",
-    jacksonScala % "compile",
-    jacksonJaxrs % "compile",
-    hibernate % "compile",
-    glassfish % "compile",
-
-    metricsJersey % "compile",
-    metricsJvm % "compile",
-    metricsJetty % "compile",
-    metricsServlets % "compile",
 
     scallop % "compile",
-    mustache % "compile",
-    liftMD % "compile",
 
     logback % "compile",
     julToSlf4j % "compile",
@@ -119,19 +106,13 @@ object Dependencies {
 object Dependency {
   object V {
     // runtime deps versions
-    val Guava = "17.0"
+    val Guava = "21.0"
     val Guice = "3.0"
-    val Scallop = "1.0.0"
-    val Jersey = "1.18.1"
-    val Metrics = "3.1.2"
-    val Jetty = "9.3.6.v20151106"
-    val Jackson = "2.7.2"
-    val Hibernate = "5.2.1.Final"
-    val Mustache = "0.9.0"
-    val Logback = "1.1.7"
-    val Slf4j = "1.7.21"
-    val LiftMarkdown = "2.6.2"
-    val Glassfish = "2.2.6"
+    val Scallop = "2.1.1"
+    val Jersey = "1.19.3"
+    val Jetty = "9.3.17.v20170317"
+    val Logback = "1.2.3"
+    val Slf4j = "1.7.25"
 
     // test deps versions
     val JUnit = "4.12"
@@ -148,19 +129,8 @@ object Dependency {
   val jerseyServer = "com.sun.jersey" % "jersey-server" % V.Jersey
   val jerseyServlet = "com.sun.jersey" % "jersey-servlet" % V.Jersey
   val jerseyGuice = "com.sun.jersey.contribs" % "jersey-guice" % V.Jersey
-  val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % V.Jackson
-  val jacksonJaxrs = "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % V.Jackson
-  val hibernate = "org.hibernate" % "hibernate-validator" % V.Hibernate
-  val glassfish = "org.glassfish.web" % "javax.el" % V.Glassfish
-
-  val metricsJersey = "io.dropwizard.metrics" % "metrics-jersey" % V.Metrics
-  val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % V.Metrics
-  val metricsJetty = "io.dropwizard.metrics" % "metrics-jetty9" % V.Metrics
-  val metricsServlets = "io.dropwizard.metrics" % "metrics-servlets" % V.Metrics
 
   val scallop = "org.rogach" %% "scallop" % V.Scallop
-  val mustache = "com.github.spullara.mustache.java" % "compiler" % V.Mustache
-  val liftMD = "net.liftweb" %% "lift-markdown" % V.LiftMarkdown
 
   val logback = "ch.qos.logback" % "logback-classic" % V.Logback
   val log4jOverSlf4j = "org.slf4j" % "log4j-over-slf4j" % V.Slf4j

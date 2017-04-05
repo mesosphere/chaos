@@ -69,12 +69,6 @@ trait HttpConf extends ScallopConf {
     prefix = "disable_"
   )
 
-  @deprecated("Asset path is not supported.", since = "0.8.5")
-  lazy val assetsFileSystemPath = opt[String]("assets_path",
-    descr = "Set a local file system path to load assets from, " +
-      "instead of loading them from the packaged jar.",
-    default = None, noshort = true, hidden = true)
-
   lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(HttpConf.httpCredentialsEnvName)
   lazy val sslKeystorePathEnvValue: Option[String] = sys.env.get(HttpConf.sslKeystorePathEnvName)
   lazy val sslKeystorePasswordEnvValue: Option[String] = sys.env.get(HttpConf.sslKeystorePasswordEnvName)
