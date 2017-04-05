@@ -43,6 +43,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
     httpConfig.setSecureScheme("https")
     httpConfig.setSecurePort(conf.httpsPort())
     httpConfig.setOutputBufferSize(32768)
+    httpConfig.setSendServerVersion(false)
 
     def addConnector(name: String)(connector: Option[Connector]): Unit = {
       connector match {
