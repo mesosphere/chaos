@@ -5,24 +5,29 @@ import java.net.URL
 
 trait HttpConf extends ScallopConf {
 
-  lazy val disableHttp = opt[Boolean]("disable_http",
+  lazy val disableHttp = opt[Boolean](
+    "disable_http",
     descr = "Disable listening for HTTP requests completely. HTTPS is unaffected.",
     noshort = true,
     default = Some(false))
 
-  lazy val httpAddress = opt[String]("http_address",
+  lazy val httpAddress = opt[String](
+    "http_address",
     descr = "The address to listen on for HTTP requests", default = None,
     noshort = true)
 
-  lazy val httpPort = opt[Int]("http_port",
+  lazy val httpPort = opt[Int](
+    "http_port",
     descr = "The port to listen on for HTTP requests", default = Some(8080),
     noshort = true)
 
-  lazy val httpsAddress = opt[String]("https_address",
+  lazy val httpsAddress = opt[String](
+    "https_address",
     descr = "The address to listen on for HTTPS requests.", default = None,
     noshort = true)
 
-  lazy val httpsPort = opt[Int]("https_port",
+  lazy val httpsPort = opt[Int](
+    "https_port",
     descr = "The port to listen on for HTTPS requests", default = Some(8443),
     noshort = true)
 
@@ -61,7 +66,8 @@ trait HttpConf extends ScallopConf {
     noshort = true
   )
 
-  lazy val httpCompression = toggle("http_compression",
+  lazy val httpCompression = toggle(
+    "http_compression",
     default = Some(true),
     noshort = true,
     descrYes = "(Default) Enable http compression.",
@@ -70,9 +76,10 @@ trait HttpConf extends ScallopConf {
   )
 
   @deprecated("Asset path is not supported.", since = "0.8.5")
-  lazy val assetsFileSystemPath = opt[String]("assets_path",
+  lazy val assetsFileSystemPath = opt[String](
+    "assets_path",
     descr = "Set a local file system path to load assets from, " +
-      "instead of loading them from the packaged jar.",
+    "instead of loading them from the packaged jar.",
     default = None, noshort = true, hidden = true)
 
   lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(HttpConf.httpCredentialsEnvName)

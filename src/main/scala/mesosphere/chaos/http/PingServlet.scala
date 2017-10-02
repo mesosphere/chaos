@@ -29,8 +29,7 @@ class PingServlet extends HttpServlet {
     val writer = resp.getWriter
     try {
       writer.println(CONTENT)
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }

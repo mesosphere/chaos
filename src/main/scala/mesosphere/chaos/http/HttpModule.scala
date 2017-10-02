@@ -90,8 +90,7 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
       val connector = new ServerConnector(server, new HttpConnectionFactory(httpConfig))
       configureConnectorAddress(connector, conf.httpAddress, conf.httpPort)
       Some(connector)
-    }
-    else {
+    } else {
       None
     }
   }
@@ -99,7 +98,8 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
   private[this] def getHTTPSConnector(server: Server, httpConfig: HttpConfiguration): Option[ServerConnector] = {
     def createHTTPSConnector(keystorePath: String, keystorePassword: String): ServerConnector = {
       val keystore = new File(keystorePath)
-      require(keystore.exists() && keystore.canRead,
+      require(
+        keystore.exists() && keystore.canRead,
         f"${conf.sslKeystorePath()} is invalid or not readable!")
 
       val contextFactory = new SslContextFactory()
@@ -136,8 +136,9 @@ class HttpModule(conf: HttpConf) extends AbstractModule {
 
   @Provides
   @Singleton
-  def provideHandlerCollection(instrumentedHandler: InstrumentedHandler,
-                               logHandler: RequestLogHandler): HandlerCollection = {
+  def provideHandlerCollection(
+    instrumentedHandler: InstrumentedHandler,
+    logHandler: RequestLogHandler): HandlerCollection = {
     val handlers = new HandlerCollection()
     handlers.setHandlers(Array(instrumentedHandler, logHandler))
     handlers

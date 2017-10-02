@@ -13,9 +13,10 @@ import java.net.URLDecoder
 import javax.servlet.http.{ HttpServletResponse, HttpServletRequest, HttpServlet }
 import javax.ws.rs._
 
-class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
-                             injector: Injector,
-                             container: GuiceContainer) extends HttpServlet {
+class HelpServlet @Inject() (
+  @Named("helpPathPrefix") pathPrefix: String,
+    injector: Injector,
+    container: GuiceContainer) extends HttpServlet {
 
   val basePathPattern = s"^$pathPrefix/?$$".r
   val pathPattern = s"^$pathPrefix/([A-Z]+)(/.+)".r
@@ -68,8 +69,7 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
       }
       writer.println("</tbody></table>")
       writer.print(htmlFooter)
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }
@@ -105,8 +105,7 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
           writer.println(s"No resource defined for $httpMethod $path")
         }
       }
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }
@@ -139,8 +138,7 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
 
         if (httpMethod.isDefined) {
           pathMap((path, httpMethod.get)) = method
-        }
-        else if (methodPath.nonEmpty) {
+        } else if (methodPath.nonEmpty) {
           // Sub-resources have a Path annotation but no HTTP method
           handleClass(path, method.getReturnType)
         }

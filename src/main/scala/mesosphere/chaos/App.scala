@@ -32,8 +32,7 @@ trait App extends scala.App {
 
     try {
       serviceManager.awaitHealthy()
-    }
-    catch {
+    } catch {
       case e: Exception =>
         log.error(s"Failed to start all services. Services by state: ${serviceManager.servicesByState()}", e)
         shutdownAndWait()

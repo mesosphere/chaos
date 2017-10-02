@@ -18,8 +18,7 @@ class HttpService @Inject() (val server: Server) extends AbstractIdleService {
     log.debug("Starting up HttpServer.")
     try {
       server.start()
-    }
-    catch {
+    } catch {
       case e: Exception =>
         log.error("Failed to start HTTP service", e)
         Try(server.stop())
