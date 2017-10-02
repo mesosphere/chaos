@@ -2,7 +2,7 @@ package mesosphere.chaos.http
 
 import com.google.inject.Injector
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer
-import net.liftweb.markdown.ActuariusTransformer
+import net.liftweb.markdown.ThreadLocalTransformer
 import scala.collection.JavaConverters._
 import scala.collection.{ SortedSet, mutable }
 import scala.io.Source
@@ -87,7 +87,7 @@ class HelpServlet @Inject() (@Named("helpPathPrefix") pathPrefix: String,
             case Some(url) => {
               resp.setStatus(HttpServletResponse.SC_OK)
               resp.addHeader(contentType, textHtml)
-              val transformer = new ActuariusTransformer
+              val transformer = new ThreadLocalTransformer
               val markdown = transformer(Source.fromURL(url).mkString)
               writer.print(htmlHeader)
               writer.print(markdown)
