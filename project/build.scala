@@ -1,12 +1,13 @@
 import com.amazonaws.auth.InstanceProfileCredentialsProvider
 import com.typesafe.sbt.SbtScalariform._
 import ohnosequences.sbt.SbtS3Resolver
-import ohnosequences.sbt.SbtS3Resolver.{ S3Resolver, s3, s3resolver }
+import ohnosequences.sbt.SbtS3Resolver.autoImport.{ s3, s3resolver, s3credentials, S3Resolver }
 import org.scalastyle.sbt.ScalastylePlugin.{ Settings => styleSettings }
-import spray.revolver.RevolverPlugin.Revolver.{settings => revolverSettings}
+import spray.revolver.RevolverPlugin.autoImport.Revolver.{settings => revolverSettings}
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin._
+import sbtrelease.ReleasePlugin
 
 import scalariform.formatter.preferences._
 
@@ -16,7 +17,7 @@ object ChaosBuild extends Build {
     base = file("."),
     settings = baseSettings ++
       revolverSettings ++
-      releaseSettings ++
+      ReleasePlugin.projectSettings ++
       publishSettings ++
       formatSettings ++
       styleSettings ++
@@ -37,8 +38,8 @@ object ChaosBuild extends Build {
 
   lazy val baseSettings = Defaults.defaultSettings ++ Seq (
     organization := "mesosphere",
-    scalaVersion := "2.11.7",
-    crossScalaVersions := Seq("2.11.7"),
+    scalaVersion := "2.12.3",
+    crossScalaVersions := Seq("2.11.11", "2.12.3"),
     scalacOptions in Compile ++= Seq("-encoding", "UTF-8", "-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
     javacOptions in Compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
     resolvers ++= Seq(
@@ -48,7 +49,7 @@ object ChaosBuild extends Build {
     )
   )
 
-  lazy val publishSettings = S3Resolver.defaults ++ Seq(
+  lazy val publishSettings = SbtS3Resolver.projectSettings ++ Seq(
     publishTo := Some(s3resolver.value(
       "Mesosphere Public Repo (S3)",
       s3("downloads.mesosphere.io/maven")
@@ -60,14 +61,16 @@ object ChaosBuild extends Build {
     ScalariformKeys.preferences := FormattingPreferences()
       .setPreference(IndentWithTabs, false)
       .setPreference(IndentSpaces, 2)
-      .setPreference(AlignParameters, true)
+      .setPreference(AlignArguments, false)
+      .setPreference(AlignParameters, false)
       .setPreference(DoubleIndentClassDeclaration, true)
       .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
       .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
-      .setPreference(PreserveDanglingCloseParenthesis, true)
-      .setPreference(CompactControlReadability, true) //MV: should be false!
+      .setPreference(DanglingCloseParenthesis, Preserve)
+      .setPreference(CompactControlReadability, false)
       .setPreference(AlignSingleLineCaseStatements, true)
       .setPreference(PreserveSpaceBeforeArguments, true)
+      .setPreference(SpacesAroundMultiImports, true)
       .setPreference(SpaceBeforeColon, false)
       .setPreference(SpaceInsideBrackets, false)
       .setPreference(SpaceInsideParentheses, false)
@@ -123,14 +126,14 @@ object Dependency {
     val Guice = "3.0"
     val Scallop = "1.0.0"
     val Jersey = "1.18.1"
-    val Metrics = "3.1.2"
+    val Metrics = "3.2.5"
     val Jetty = "9.3.6.v20151106"
-    val Jackson = "2.7.2"
+    val Jackson = "2.8.9"
     val Hibernate = "5.2.1.Final"
     val Mustache = "0.9.0"
     val Logback = "1.1.7"
     val Slf4j = "1.7.21"
-    val LiftMarkdown = "2.6.2"
+    val LiftMarkdown = "3.1.1"
     val Glassfish = "2.2.6"
 
     // test deps versions

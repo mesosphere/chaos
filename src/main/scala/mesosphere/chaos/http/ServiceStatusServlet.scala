@@ -37,8 +37,7 @@ class ServiceStatusServlet @Inject() (val status: ServiceStatus)
         case false => "off"
       }
       writer.println(response)
-    }
-    finally {
+    } finally {
       writer.close()
     }
   }
@@ -47,12 +46,11 @@ class ServiceStatusServlet @Inject() (val status: ServiceStatus)
     val pathInfo = req.getPathInfo()
     if (pathInfo.endsWith("/on")) {
       status.isOn.set(true)
-    }
-    else if (pathInfo.endsWith("/off")) {
+    } else if (pathInfo.endsWith("/off")) {
       status.isOn.set(false)
-    }
-    else {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND,
+    } else {
+      resp.sendError(
+        HttpServletResponse.SC_NOT_FOUND,
         "Invalid URL")
       return
     }
