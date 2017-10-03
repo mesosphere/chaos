@@ -79,7 +79,7 @@ trait HttpConf extends ScallopConf {
   lazy val assetsFileSystemPath = opt[String](
     "assets_path",
     descr = "Set a local file system path to load assets from, " +
-    "instead of loading them from the packaged jar.",
+      "instead of loading them from the packaged jar.",
     default = None, noshort = true, hidden = true)
 
   lazy val httpCredentialsEnvValue: Option[String] = sys.env.get(HttpConf.httpCredentialsEnvName)

@@ -14,7 +14,7 @@ import javax.servlet.http.{ HttpServletResponse, HttpServletRequest, HttpServlet
 import javax.ws.rs._
 
 class HelpServlet @Inject() (
-  @Named("helpPathPrefix") pathPrefix: String,
+    @Named("helpPathPrefix") pathPrefix: String,
     injector: Injector,
     container: GuiceContainer) extends HttpServlet {
 
