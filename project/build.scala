@@ -1,7 +1,7 @@
 import com.amazonaws.auth.InstanceProfileCredentialsProvider
 import com.typesafe.sbt.SbtScalariform._
 import ohnosequences.sbt.SbtS3Resolver
-import ohnosequences.sbt.SbtS3Resolver.autoImport.{ s3, s3resolver, s3credentials, S3Resolver }
+import ohnosequences.sbt.SbtS3Resolver.autoImport.{ s3, s3resolver, s3credentials, S3Resolver, awsProfile }
 import org.scalastyle.sbt.ScalastylePlugin.{ Settings => styleSettings }
 import spray.revolver.RevolverPlugin.autoImport.Revolver.{settings => revolverSettings}
 import sbt.Keys._
@@ -26,7 +26,23 @@ object ChaosBuild extends Build {
         parallelExecution in Test := false,
         fork in Test := true
       )
-  )
+  ).dependsOn(jerseyGuice).aggregate(jerseyGuice)
+
+  lazy val jerseyGuice = Project(
+    id = "chaos-jersey-guice-14",
+    base = file("./jersey-guice"),
+    settings = baseSettings ++
+      publishSettings ++
+      Seq(
+        publishArtifact in (Compile, packageDoc) := false,
+        libraryDependencies ++= Seq(
+          Dependency.jerseyCore,
+          Dependency.jerseyServer,
+          Dependency.jerseyServlet,
+          Dependency.guice,
+          Dependency.guiceServlet,
+          Dependency.servletApi % "provided",
+          Dependency.javaXInject)))
 
   lazy val testScalaStyle = taskKey[Unit]("testScalaStyle")
 
@@ -39,6 +55,7 @@ object ChaosBuild extends Build {
   lazy val baseSettings = Defaults.defaultSettings ++ Seq (
     organization := "mesosphere",
     scalaVersion := "2.12.3",
+    awsProfile := sys.env.getOrElse("AWS_PROFILE", "default"),
     crossScalaVersions := Seq("2.11.11", "2.12.3"),
     scalacOptions in Compile ++= Seq("-encoding", "UTF-8", "-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-Xlog-reflective-calls", "-Xlint"),
     javacOptions in Compile ++= Seq("-encoding", "UTF-8", "-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
@@ -50,6 +67,7 @@ object ChaosBuild extends Build {
   )
 
   lazy val publishSettings = SbtS3Resolver.projectSettings ++ Seq(
+    awsProfile := sys.env.getOrElse("AWS_PROFILE", "default"),
     publishTo := Some(s3resolver.value(
       "Mesosphere Public Repo (S3)",
       s3("downloads.mesosphere.io/maven")
@@ -93,7 +111,6 @@ object Dependencies {
     jerseyCore % "compile",
     jerseyServer % "compile",
     jerseyServlet % "compile",
-    jerseyGuice % "compile",
     jacksonScala % "compile",
     jacksonJaxrs % "compile",
     hibernate % "compile",
@@ -123,7 +140,7 @@ object Dependency {
   object V {
     // runtime deps versions
     val Guava = "17.0"
-    val Guice = "3.0"
+    val Guice = "4.1.0"
     val Scallop = "1.0.0"
     val Jersey = "1.18.1"
     val Metrics = "3.2.5"
@@ -135,12 +152,16 @@ object Dependency {
     val Slf4j = "1.7.21"
     val LiftMarkdown = "3.1.1"
     val Glassfish = "2.2.6"
+    val ServletApi = "2.5"
+    val JavaxInject = "1"
 
     // test deps versions
     val JUnit = "4.12"
     val Mockito = "1.10.19"
   }
 
+  val javaXInject = "javax.inject" % "javax.inject" % V.JavaxInject
+  val servletApi = "javax.servlet" % "servlet-api" % V.ServletApi
   val guava = "com.google.guava" % "guava" % V.Guava
   val guice = "com.google.inject" % "guice" % V.Guice
   val guiceServlet = "com.google.inject.extensions" % "guice-servlet" % V.Guice
@@ -150,7 +171,6 @@ object Dependency {
   val jerseyCore = "com.sun.jersey" % "jersey-core" % V.Jersey
   val jerseyServer = "com.sun.jersey" % "jersey-server" % V.Jersey
   val jerseyServlet = "com.sun.jersey" % "jersey-servlet" % V.Jersey
-  val jerseyGuice = "com.sun.jersey.contribs" % "jersey-guice" % V.Jersey
   val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % V.Jackson
   val jacksonJaxrs = "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % V.Jackson
   val hibernate = "org.hibernate" % "hibernate-validator" % V.Hibernate
