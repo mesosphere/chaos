@@ -110,5 +110,4 @@ The team at [Mesosphere](https://mesosphere.com/) is also happy to answer any qu
 
 ## Current Users
 
-* [Marathon](https://github.com/mesosphere/marathon), an Apache Mesos framework for long-running services.
 * [Chronos](https://github.com/mesos/chronos), a fault tolerant job scheduler that handles dependencies and ISO8601 based schedules.
